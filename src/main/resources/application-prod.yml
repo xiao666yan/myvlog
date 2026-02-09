@@ -7,6 +7,9 @@ spring:
     init:
       mode: never
 
+file:
+  upload-dir: /app/uploads/
+
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl # 生产环境关闭日志
