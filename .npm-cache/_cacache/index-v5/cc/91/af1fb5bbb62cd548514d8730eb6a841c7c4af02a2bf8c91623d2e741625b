@@ -1,0 +1,2 @@
+
+a7139926dbbc8506b589d318f7348281867e4b62	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@vavt%2futil","integrity":null,"time":1769477956033,"size":"262","metadata":{"time":1769477956033,"url":"http://registry.npm.taobao.org/@vavt%2futil","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Tue, 27 Jan 2026 01:39:15 GMT","location":"https://registry.npmmirror.com/@vavt%2futil"},"options":{"compress":true},"status":301}}

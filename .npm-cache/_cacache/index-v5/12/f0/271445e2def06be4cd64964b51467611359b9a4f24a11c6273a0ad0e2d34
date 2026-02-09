@@ -1,0 +1,2 @@
+
+130d7ef95e393441046770c259a71794d475ac6e	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@codemirror%2flang-yaml","integrity":null,"time":1769477956705,"size":"262","metadata":{"time":1769477956705,"url":"http://registry.npm.taobao.org/@codemirror%2flang-yaml","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Tue, 27 Jan 2026 01:39:15 GMT","location":"https://registry.npmmirror.com/@codemirror%2flang-yaml"},"options":{"compress":true},"status":301}}

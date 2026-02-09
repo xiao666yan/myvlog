@@ -1,0 +1,2 @@
+
+3904ced519c87bc1b62313a9ef26cdf08fa2d228	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@rollup%2frollup-linux-arm64-musl","integrity":null,"time":1769437772592,"size":"262","metadata":{"time":1769437772592,"url":"http://registry.npm.taobao.org/@rollup%2frollup-linux-arm64-musl","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Mon, 26 Jan 2026 14:29:32 GMT","location":"https://registry.npmmirror.com/@rollup%2frollup-linux-arm64-musl"},"options":{"compress":true},"status":301}}

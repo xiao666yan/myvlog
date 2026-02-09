@@ -1,0 +1,2 @@
+
+a34e27a299c32fc9558aef0c00c289e4b891df00	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@esbuild%2faix-ppc64","integrity":null,"time":1769437772200,"size":"262","metadata":{"time":1769437772200,"url":"http://registry.npm.taobao.org/@esbuild%2faix-ppc64","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Mon, 26 Jan 2026 14:29:32 GMT","location":"https://registry.npmmirror.com/@esbuild%2faix-ppc64"},"options":{"compress":true},"status":301}}

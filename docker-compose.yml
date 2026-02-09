@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: myvlog-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: myvlog
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-123456}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build: .
+    container_name: myvlog-backend
+    restart: always
+    ports:
+      - "3060:3060"
+    environment:
+      - DB_PASSWORD=${DB_PASSWORD:-123456}
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      - mysql
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+
+  nginx:
+    image: nginx:alpine
+    container_name: myvlog-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./uploads:/usr/share/nginx/html/uploads
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:

@@ -1,0 +1,2 @@
+
+ad056c492e14abafd9963aedda29d4e35be6c68a	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/uc.micro","integrity":null,"time":1769477956801,"size":"262","metadata":{"time":1769477956801,"url":"http://registry.npm.taobao.org/uc.micro","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Tue, 27 Jan 2026 01:39:15 GMT","location":"https://registry.npmmirror.com/uc.micro"},"options":{"compress":true},"status":301}}

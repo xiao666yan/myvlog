@@ -1,0 +1,2 @@
+
+de1b879e772597df5b9231beb22ce06b1ae5120f	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@esbuild%2flinux-mips64el","integrity":null,"time":1769437772216,"size":"262","metadata":{"time":1769437772216,"url":"http://registry.npm.taobao.org/@esbuild%2flinux-mips64el","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Mon, 26 Jan 2026 14:29:32 GMT","location":"https://registry.npmmirror.com/@esbuild%2flinux-mips64el"},"options":{"compress":true},"status":301}}

@@ -1,0 +1,2 @@
+
+3e2c7061d817dbff7ae9bcf8d890ddea705f0089	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/lucide-vue-next","integrity":null,"time":1769477956031,"size":"262","metadata":{"time":1769477956031,"url":"http://registry.npm.taobao.org/lucide-vue-next","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Tue, 27 Jan 2026 01:39:15 GMT","location":"https://registry.npmmirror.com/lucide-vue-next"},"options":{"compress":true},"status":301}}

@@ -1,0 +1,2 @@
+
+c22e1ffc7189b0b1de6414640ffa4f0763c5c9f7	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/source-map-js","integrity":null,"time":1769437772482,"size":"262","metadata":{"time":1769437772482,"url":"http://registry.npm.taobao.org/source-map-js","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Mon, 26 Jan 2026 14:29:32 GMT","location":"https://registry.npmmirror.com/source-map-js"},"options":{"compress":true},"status":301}}

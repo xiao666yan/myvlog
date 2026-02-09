@@ -1,0 +1,2 @@
+
+073c6e3ca3814361a4c32bd466a6ecd11aefb04b	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@codemirror%2flanguage-data","integrity":null,"time":1769477956027,"size":"262","metadata":{"time":1769477956027,"url":"http://registry.npm.taobao.org/@codemirror%2flanguage-data","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Tue, 27 Jan 2026 01:39:15 GMT","location":"https://registry.npmmirror.com/@codemirror%2flanguage-data"},"options":{"compress":true},"status":301}}

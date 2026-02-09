@@ -1,0 +1,2 @@
+
+a11948fb4954e4659f4d889c089ec1e70dd36270	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/markdown-it-sub","integrity":null,"time":1769477956198,"size":"262","metadata":{"time":1769477956198,"url":"http://registry.npm.taobao.org/markdown-it-sub","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Tue, 27 Jan 2026 01:39:15 GMT","location":"https://registry.npmmirror.com/markdown-it-sub"},"options":{"compress":true},"status":301}}

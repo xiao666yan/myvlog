@@ -1,0 +1,2 @@
+
+85bcf02213daa89112b7457ceac497f3710fc780	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@lezer%2frust","integrity":null,"time":1769477957175,"size":"262","metadata":{"time":1769477957175,"url":"http://registry.npm.taobao.org/@lezer%2frust","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Tue, 27 Jan 2026 01:39:16 GMT","location":"https://registry.npmmirror.com/@lezer%2frust"},"options":{"compress":true},"status":301}}

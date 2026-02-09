@@ -1,0 +1,2 @@
+
+a0506d22a12bc643a208ca6e16d3c225b91fc31d	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@babel%2fparser","integrity":null,"time":1769437773084,"size":"262","metadata":{"time":1769437773084,"url":"http://registry.npm.taobao.org/@babel%2fparser","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Mon, 26 Jan 2026 14:29:32 GMT","location":"https://registry.npmmirror.com/@babel%2fparser"},"options":{"compress":true},"status":301}}

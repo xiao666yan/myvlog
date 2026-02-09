@@ -1,0 +1,2 @@
+
+f376bfe5ab775bf035df0be9b172e3a2b797262a	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@lezer%2fjava","integrity":null,"time":1769477957173,"size":"262","metadata":{"time":1769477957173,"url":"http://registry.npm.taobao.org/@lezer%2fjava","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Tue, 27 Jan 2026 01:39:16 GMT","location":"https://registry.npmmirror.com/@lezer%2fjava"},"options":{"compress":true},"status":301}}
