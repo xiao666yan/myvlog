@@ -211,14 +211,20 @@ const removeTag = (tagId) => {
 const onCoverFileChange = async (e) => {
   const file = e.target.files && e.target.files[0];
   if (!file) return;
+
+  // Check file size (10MB)
+  if (file.size > 10 * 1024 * 1024) {
+    showMessage('图片大小不能超过 10MB', 'error');
+    return;
+  }
+
   try {
     const fd = new FormData();
     fd.append('file', file);
-    const res = await request.post('/upload', fd, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
-    form.coverImage = res.url || '';
-    coverUrl.value = form.coverImage;
+    const res = await request.post('/upload', fd);
+    form.coverImage = res.url;
+    coverUrl.value = res.url;
+    showMessage('封面上传成功');
   } catch (err) {
     console.error('封面上传失败', err);
     showMessage('封面上传失败，请重试', 'error');
@@ -237,6 +243,44 @@ const triggerFileInput = () => {
 const clearCover = () => {
   form.coverImage = '';
   coverUrl.value = '';
+};
+
+const onUploadImg = async (files, callback) => {
+  console.log('MdEditor: onUploadImg called', files);
+  try {
+    const res = await Promise.all(
+      files.map((file) => {
+        return new Promise(async (resolve, reject) => {
+          // Check file size (10MB)
+          if (file.size > 10 * 1024 * 1024) {
+            const errorMsg = `${file.name} 大小超过 10MB 限制`;
+            showMessage(errorMsg, 'error');
+            reject(new Error(errorMsg));
+            return;
+          }
+
+          try {
+            const fd = new FormData();
+            fd.append('file', file);
+            console.log(`Uploading file: ${file.name}`);
+            const res = await request.post('/upload', fd);
+            console.log(`Upload success for ${file.name}:`, res);
+            resolve(res.url);
+          } catch (err) {
+            console.error(`Upload failed for ${file.name}`, err);
+            const errorDetail = err.response?.data?.message || err.message || '未知错误';
+            showMessage(`图片上传失败: ${errorDetail}`, 'error');
+            reject(err);
+          }
+        });
+      })
+    );
+
+    console.log('All files uploaded successfully:', res);
+    callback(res);
+  } catch (error) {
+    console.error('onUploadImg batch error:', error);
+  }
 };
 
 const submitArticle = async () => {

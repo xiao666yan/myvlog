@@ -21,7 +21,9 @@ public class FileUploadController {
 
     @PostMapping
     public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
+        System.out.println("DEBUG: uploadFile called, filename: " + file.getOriginalFilename() + ", size: " + file.getSize());
         String fileUrl = fileStorageService.storeFile(file);
+        System.out.println("DEBUG: uploadFile success, url: " + fileUrl);
         
         Map<String, String> response = new HashMap<>();
         response.put("url", fileUrl);

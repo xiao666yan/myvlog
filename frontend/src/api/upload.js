@@ -6,9 +6,6 @@ export function uploadFile(file) {
   return request({
     url: '/upload',
     method: 'post',
-    data: formData,
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
+    data: formData
   });
 }
