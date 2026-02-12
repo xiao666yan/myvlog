@@ -55,7 +55,8 @@ service.interceptors.response.use(
           console.error('没有权限访问该资源');
           break;
         case 500:
-          console.error('服务器内部错误');
+          const msg = error.response.data?.error || error.response.data?.message || '服务器内部错误';
+          console.error('服务器错误:', msg);
           break;
       }
     }

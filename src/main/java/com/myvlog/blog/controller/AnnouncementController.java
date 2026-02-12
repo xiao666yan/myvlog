@@ -20,15 +20,28 @@ public class AnnouncementController {
     private final AnnouncementService announcementService;
 
     @GetMapping("/active")
-    public ResponseEntity<List<AnnouncementDto>> getActiveAnnouncements() {
-        System.out.println("DEBUG: getActiveAnnouncements called");
-        List<Announcement> announcements = announcementService.getActiveAnnouncements();
-        List<AnnouncementDto> dtos = announcements.stream().map(a -> {
-            AnnouncementDto dto = new AnnouncementDto();
-            BeanUtils.copyProperties(a, dto);
-            return dto;
-        }).collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
+    public ResponseEntity<?> getActiveAnnouncements() {
+        try {
+            System.out.println("DEBUG: getActiveAnnouncements called");
+            List<Announcement> announcements = announcementService.getActiveAnnouncements();
+            if (announcements == null) {
+                return ResponseEntity.ok(java.util.Collections.emptyList());
+            }
+            List<AnnouncementDto> dtos = announcements.stream().map(a -> {
+                AnnouncementDto dto = new AnnouncementDto();
+                try {
+                    BeanUtils.copyProperties(a, dto);
+                } catch (Exception e) {
+                    System.err.println("ERROR: BeanUtils copy failed for announcement ID " + a.getId());
+                }
+                return dto;
+            }).collect(Collectors.toList());
+            return ResponseEntity.ok(dtos);
+        } catch (Exception e) {
+            System.err.println("ERROR in getActiveAnnouncements: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(java.util.Map.of("error", "获取公告失败: " + e.getMessage()));
+        }
     }
 
     @PostMapping

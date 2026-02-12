@@ -25,4 +25,10 @@ public class Announcement extends BaseEntity {
 
     @TableField("is_active")
     private Boolean isActive;
+
+    @TableField("created_at")
+    private java.time.LocalDateTime createdAt;
+
+    @TableField("updated_at")
+    private java.time.LocalDateTime updatedAt;
 }
