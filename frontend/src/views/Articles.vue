@@ -22,6 +22,8 @@
         </div>
         <div class="article-content">
           <div class="article-meta">
+            <span v-if="article.visibility === 'private'" class="visibility-tag private">仅自己可见</span>
+            <span v-else-if="article.visibility === 'vip'" class="visibility-tag vip">会员可见</span>
             <span class="category">{{ article.category ? article.category.name : '未分类' }}</span>
             <span class="date">{{ formatDate(article.publishedAt || article.createdAt) }}</span>
             <span class="author">{{ (article.author && article.author.nickname) ? article.author.nickname : (article.author && article.author.username ? article.author.username : '未知作者') }}</span>
@@ -207,6 +209,23 @@ h1 {
   background-color: rgba(66, 185, 131, 0.1);
   padding: 2px 8px;
   border-radius: 4px;
+}
+
+.visibility-tag {
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.visibility-tag.private {
+  background-color: #ff4d4f;
+  color: white;
+}
+
+.visibility-tag.vip {
+  background-color: #faad14;
+  color: white;
 }
 
 .tags {

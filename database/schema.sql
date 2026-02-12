@@ -97,7 +97,7 @@ CREATE TABLE `articles` (
   `author_id` BIGINT UNSIGNED NOT NULL COMMENT '作者ID',
   `category_id` BIGINT UNSIGNED DEFAULT NULL COMMENT '分类ID',
   `status` ENUM('draft', 'published', 'scheduled', 'hidden') NOT NULL DEFAULT 'draft' COMMENT '状态',
-  `visibility` ENUM('public', 'vip', 'paid', 'password') NOT NULL DEFAULT 'public' COMMENT '可见性',
+  `visibility` ENUM('public', 'private', 'vip', 'paid', 'password') NOT NULL DEFAULT 'public' COMMENT '可见性',
   `password` VARCHAR(50) DEFAULT NULL COMMENT '访问密码(当visibility=password)',
   `price` DECIMAL(10, 2) DEFAULT 0.00 COMMENT '单篇价格(当visibility=paid)',
   `is_top` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否置顶',

@@ -319,6 +319,15 @@ public class DataInitializer implements CommandLineRunner {
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统公告表'
             """);
 
+            // Update articles visibility column to include 'private'
+            try {
+                jdbcTemplate.execute("ALTER TABLE `articles` MODIFY COLUMN `visibility` ENUM('public', 'private', 'vip', 'paid', 'password') NOT NULL DEFAULT 'public'");
+                System.out.println("DEBUG: Updated articles.visibility column to include 'private'");
+            } catch (Exception e) {
+                // Column might already be updated or error during alter
+                System.out.println("DEBUG: Skip articles.visibility update: " + e.getMessage());
+            }
+
             // Add missing columns to products if not exists (migration)
             try {
                 jdbcTemplate.execute("ALTER TABLE products ADD COLUMN created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP");

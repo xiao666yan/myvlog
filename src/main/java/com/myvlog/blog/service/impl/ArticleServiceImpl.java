@@ -83,19 +83,29 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         
         LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
         
-        // 1. Status Filter: Public see Published, Author/Admin see all (Drafts included)
-        // Exception: Strict Tag Search (#Tag) ignores status filter to allow authors to find drafts easily
+        // 1. Status & Visibility Filter
+        // - Public: see Published && (Visibility != PRIVATE)
+        // - Author: see all their own (Drafts, Private included)
+        // - Admin: see all
         boolean isStrictTagSearch = StringUtils.hasText(keyword) && keyword.trim().startsWith("#");
         
         if (!isStrictTagSearch) {
             wrapper.and(w -> {
-                w.eq(Article::getStatus, ArticleStatus.PUBLISHED);
+                // Base condition: Published and NOT Private
+                w.and(b -> b.eq(Article::getStatus, ArticleStatus.PUBLISHED)
+                           .ne(Article::getVisibility, ArticleVisibility.PRIVATE));
+                
                 if (currentUser != null) {
                     if ("admin".equals(currentUser.getRole())) {
-                        w.or().eq(Article::getStatus, ArticleStatus.DRAFT);
+                        // Admin sees everything
+                        w.or().eq(Article::getStatus, ArticleStatus.DRAFT)
+                         .or().eq(Article::getVisibility, ArticleVisibility.PRIVATE);
                     } else {
                         Long uid = currentUser.getId();
-                        w.or(o -> o.eq(Article::getStatus, ArticleStatus.DRAFT).eq(Article::getAuthorId, uid));
+                        // Author sees their own Drafts or Private articles
+                        w.or(o -> o.and(a -> a.eq(Article::getAuthorId, uid)
+                                             .and(i -> i.eq(Article::getStatus, ArticleStatus.DRAFT)
+                                                        .or().eq(Article::getVisibility, ArticleVisibility.PRIVATE))));
                     }
                 }
             });
@@ -292,15 +302,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         
         User currentUser = tryGetCurrentUser();
         
-        // Draft check: only author or admin can see drafts
-        if (article.getStatus() != ArticleStatus.PUBLISHED) {
+        // Draft & Visibility check: only author or admin can see drafts or private articles
+        if (article.getStatus() != ArticleStatus.PUBLISHED || article.getVisibility() == ArticleVisibility.PRIVATE) {
             if (currentUser == null) {
-                throw new RuntimeException("Article not published");
+                throw new RuntimeException(article.getVisibility() == ArticleVisibility.PRIVATE ? "Article is private" : "Article not published");
             }
             boolean isAdmin = "admin".equals(currentUser.getRole());
             boolean isAuthor = article.getAuthorId().equals(currentUser.getId());
             if (!isAdmin && !isAuthor) {
-                throw new RuntimeException("Article not published");
+                throw new RuntimeException(article.getVisibility() == ArticleVisibility.PRIVATE ? "Article is private" : "Article not published");
             }
         }
         
@@ -322,15 +332,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         
         User currentUser = tryGetCurrentUser();
 
-        // Draft check: only author or admin can see drafts
-        if (article.getStatus() != ArticleStatus.PUBLISHED) {
+        // Draft & Visibility check: only author or admin can see drafts or private articles
+        if (article.getStatus() != ArticleStatus.PUBLISHED || article.getVisibility() == ArticleVisibility.PRIVATE) {
             if (currentUser == null) {
-                throw new RuntimeException("Article not published");
+                throw new RuntimeException(article.getVisibility() == ArticleVisibility.PRIVATE ? "Article is private" : "Article not published");
             }
             boolean isAdmin = "admin".equals(currentUser.getRole());
             boolean isAuthor = article.getAuthorId().equals(currentUser.getId());
             if (!isAdmin && !isAuthor) {
-                throw new RuntimeException("Article not published");
+                throw new RuntimeException(article.getVisibility() == ArticleVisibility.PRIVATE ? "Article is private" : "Article not published");
             }
         }
         
@@ -347,15 +357,42 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     public IPage<ArticleResponse> getArticleList(Page<Article> page, Long categoryId, Long tagId, String status, String sort) {
         LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+        User currentUser = tryGetCurrentUser();
+
+        // 1. Status & Visibility Filter
+        // - Public: see Published && (Visibility != PRIVATE)
+        // - Author: see all their own (Drafts, Private included)
+        // - Admin: see all
+        wrapper.and(w -> {
+            // Base condition: Published and NOT Private
+            w.and(b -> b.eq(Article::getStatus, ArticleStatus.PUBLISHED)
+                       .ne(Article::getVisibility, ArticleVisibility.PRIVATE));
+            
+            if (currentUser != null) {
+                if ("admin".equals(currentUser.getRole())) {
+                    // Admin sees everything
+                    w.or().eq(Article::getStatus, ArticleStatus.DRAFT)
+                     .or().eq(Article::getVisibility, ArticleVisibility.PRIVATE);
+                } else {
+                    Long uid = currentUser.getId();
+                    // Author sees their own Drafts or Private articles
+                    w.or(o -> o.and(a -> a.eq(Article::getAuthorId, uid)
+                                         .and(i -> i.eq(Article::getStatus, ArticleStatus.DRAFT)
+                                                    .or().eq(Article::getVisibility, ArticleVisibility.PRIVATE))));
+                }
+            }
+        });
         
         if (StringUtils.hasText(status)) {
-            // If checking draft/hidden, ensure permission? For now allow filtering.
-            // In controller we might force status=PUBLISHED for public endpoint.
             wrapper.eq(Article::getStatus, ArticleStatus.valueOf(status.toUpperCase()));
         }
         
         if (categoryId != null) {
             wrapper.eq(Article::getCategoryId, categoryId);
+        }
+        
+        if (tagId != null) {
+            wrapper.inSql(Article::getId, "SELECT article_id FROM article_tags WHERE tag_id = " + tagId);
         }
         
         // Sorting logic
@@ -371,8 +408,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         }
         
         Page<Article> articlePage = page(page, wrapper);
-        
-        User currentUser = tryGetCurrentUser();
         
         return articlePage.convert(article -> mapToResponse(article, currentUser));
     }

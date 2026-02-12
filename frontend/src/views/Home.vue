@@ -41,6 +41,8 @@
             <div class="article-cover" :style="{ backgroundImage: `url(${article.cover})` }"></div>
             <div class="article-info">
               <div class="article-meta">
+                <span v-if="article.visibility === 'private'" class="visibility-tag private">仅自己可见</span>
+                <span v-else-if="article.visibility === 'vip'" class="visibility-tag vip">会员可见</span>
                 <span class="date">{{ article.date }}</span>
                 <span class="tag">{{ article.category }}</span>
                 <span class="author">{{ article.authorNickname }}</span>
@@ -275,6 +277,7 @@ const loadLatestArticles = async () => {
         date: item.publishedAt ? item.publishedAt.split('T')[0] : item.createdAt.split('T')[0],
         category: (item.category && item.category.name) ? item.category.name : '默认分类',
         authorNickname: (item.author && item.author.nickname) ? item.author.nickname : (item.author && item.author.username ? item.author.username : '未知作者'),
+        visibility: item.visibility,
         cover: item.coverImage || `https://picsum.photos/seed/${item.id}/400/300`,
         wordCount: item.wordCount || 0,
         readingTime: item.readingTime || 0
@@ -514,6 +517,23 @@ onUnmounted(() => {
 .tag {
   color: var(--primary-color);
   font-weight: 600;
+}
+
+.visibility-tag {
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.visibility-tag.private {
+  background-color: #ff4d4f;
+  color: white;
+}
+
+.visibility-tag.vip {
+  background-color: #faad14;
+  color: white;
 }
 
 .article-title {

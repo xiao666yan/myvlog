@@ -58,6 +58,14 @@
               <option value="published">立即发布</option>
             </select>
           </div>
+          <div class="form-group half">
+            <label>可见性</label>
+            <select v-model="form.visibility">
+              <option value="public">公开</option>
+              <option value="private">私有 (仅自己可见)</option>
+              <option value="vip">会员可见</option>
+            </select>
+          </div>
         </div>
 
         <div class="form-group">
@@ -124,6 +132,7 @@ const form = reactive({
   summary: '',
   categoryId: '',
   status: 'draft',
+  visibility: 'public',
   tags: [],
   coverImage: ''
 });
@@ -170,6 +179,7 @@ const loadArticle = async (id) => {
     form.summary = res.summary;
     form.categoryId = res.category ? res.category.id : (res.categoryId || '');
     form.status = res.status;
+    form.visibility = res.visibility || 'public';
     form.tags = res.tags || [];
     form.coverImage = res.coverImage || '';
   } catch (error) {
