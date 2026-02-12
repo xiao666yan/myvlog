@@ -304,6 +304,21 @@ public class DataInitializer implements CommandLineRunner {
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户项目表'
             """);
 
+            // Create announcements table if not exists
+            jdbcTemplate.execute("""
+                CREATE TABLE IF NOT EXISTS `announcements` (
+                  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                  `title` VARCHAR(255) NOT NULL COMMENT '公告标题',
+                  `content` TEXT NOT NULL COMMENT '公告内容',
+                  `type` VARCHAR(50) NOT NULL DEFAULT 'general' COMMENT '公告类型',
+                  `is_active` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否激活展示',
+                  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                  PRIMARY KEY (`id`),
+                  KEY `idx_is_active` (`is_active`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统公告表'
+            """);
+
             // Add missing columns to products if not exists (migration)
             try {
                 jdbcTemplate.execute("ALTER TABLE products ADD COLUMN created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP");
