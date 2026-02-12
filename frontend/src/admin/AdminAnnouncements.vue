@@ -94,14 +94,31 @@ const formatDate = (dateStr) => {
 
 const handleSubmit = async () => {
   try {
-    await createAnnouncement(form);
+    console.log('提交公告数据:', form);
+    const res = await createAnnouncement(form);
+    console.log('发布结果:', res);
     showMessage('发布成功');
     showAddModal.value = false;
     form.title = '';
     form.content = '';
     loadData();
   } catch (error) {
-    showMessage('发布失败', 'error');
+    console.error('发布失败详情:', error);
+    let errorMsg = '未知错误';
+    if (error.response) {
+      // 请求已发出，服务器响应状态码不在 2xx 范围内
+      errorMsg = error.response.data?.message || `服务器错误 (${error.response.status})`;
+      if (error.response.status === 403) {
+        errorMsg = '没有权限发布公告，请检查管理员权限';
+      }
+    } else if (error.request) {
+      // 请求已发出，但未收到响应
+      errorMsg = '网络错误，无法连接到服务器';
+    } else {
+      // 其他错误
+      errorMsg = error.message;
+    }
+    showMessage(`发布失败: ${errorMsg}`, 'error');
   }
 };
 

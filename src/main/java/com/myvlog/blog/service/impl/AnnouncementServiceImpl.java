@@ -14,10 +14,15 @@ public class AnnouncementServiceImpl extends ServiceImpl<AnnouncementMapper, Ann
 
     @Override
     public List<Announcement> getActiveAnnouncements() {
-        return lambdaQuery()
+        List<Announcement> list = lambdaQuery()
                 .eq(Announcement::getIsActive, true)
                 .orderByDesc(Announcement::getCreatedAt)
                 .list();
+        System.out.println("DEBUG: getActiveAnnouncements found " + (list != null ? list.size() : 0) + " announcements");
+        if (list != null && !list.isEmpty()) {
+            System.out.println("DEBUG: First announcement: " + list.get(0));
+        }
+        return list;
     }
 
     @Override

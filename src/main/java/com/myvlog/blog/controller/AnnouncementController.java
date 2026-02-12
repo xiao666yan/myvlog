@@ -34,10 +34,30 @@ public class AnnouncementController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> createAnnouncement(@RequestBody AnnouncementDto announcementDto) {
-        Announcement announcement = new Announcement();
-        BeanUtils.copyProperties(announcementDto, announcement);
-        announcementService.save(announcement);
-        return ResponseEntity.ok().build();
+        try {
+            System.out.println("DEBUG: createAnnouncement called with: " + announcementDto);
+            
+            // Check current authentication roles
+            org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            System.out.println("DEBUG: Current User: " + (auth != null ? auth.getName() : "null"));
+            System.out.println("DEBUG: Current Authorities: " + (auth != null ? auth.getAuthorities() : "null"));
+
+            Announcement announcement = new Announcement();
+            announcement.setTitle(announcementDto.getTitle());
+            announcement.setContent(announcementDto.getContent());
+            announcement.setType(announcementDto.getType());
+            // Explicitly set isActive, default to true if null
+            announcement.setIsActive(announcementDto.getIsActive() != null ? announcementDto.getIsActive() : true);
+            
+            System.out.println("DEBUG: announcement entity prepared: " + announcement);
+            announcementService.save(announcement);
+            System.out.println("DEBUG: announcement saved successfully with ID: " + announcement.getId());
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            System.err.println("ERROR: Failed to create announcement: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @DeleteMapping("/{id}")
