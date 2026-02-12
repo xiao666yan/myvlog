@@ -18,6 +18,7 @@ import AdminUsers from '../admin/AdminUsers.vue';
 import AdminCategories from '../admin/AdminCategories.vue';
 import AdminTags from '../admin/AdminTags.vue';
 import AdminComments from '../admin/AdminComments.vue';
+import AdminAnnouncements from '../admin/AdminAnnouncements.vue';
 
 const routes = [
   {
@@ -124,6 +125,12 @@ const routes = [
         path: 'comments',
         name: 'AdminComments',
         component: AdminComments,
+        meta: { requiresAdmin: true }
+      },
+      {
+        path: 'announcements',
+        name: 'AdminAnnouncements',
+        component: AdminAnnouncements,
         meta: { requiresAdmin: true }
       }
     ]

@@ -11,10 +11,6 @@
             <span class="stat-label">Articles</span>
           </div>
           <div class="stat-item">
-            <span class="stat-num">{{ stats.projectCount }}</span>
-            <span class="stat-label">Projects</span>
-          </div>
-          <div class="stat-item">
             <span class="stat-num">{{ stats.totalViews }}</span>
             <span class="stat-label">Views</span>
           </div>
@@ -63,20 +59,23 @@
         </div>
       </section>
 
-      <!-- Projects / Sidebar Right -->
+      <!-- Sidebar Right -->
       <aside class="dashboard-sidebar">
-        <!-- Projects -->
-        <div class="widget projects-widget">
-          <h3>我的项目</h3>
-          <ul class="project-list">
-            <li v-for="project in projects.slice(0, 1)" :key="project.id" class="project-item">
-              <div class="project-icon" :style="{ backgroundColor: project.color }">{{ project.initial }}</div>
-              <div class="project-details">
-                <h4>{{ project.name }}</h4>
-                <p>{{ project.desc }}</p>
-              </div>
-            </li>
-          </ul>
+        <!-- Self Introduction -->
+        <div class="widget honor-wall-widget">
+          <div class="honor-header">
+            <span class="honor-icon">👋</span>
+            <h3>自我介绍</h3>
+          </div>
+          <div class="user-intro-box">
+            <p class="user-bio">{{ bio }}</p>
+          </div>
+          <div class="honor-list">
+            <div class="honor-item">
+              <span class="medal">✨</span>
+              <span class="honor-text">热爱编程 · 分享技术 · 记录生活</span>
+            </div>
+          </div>
         </div>
 
         <!-- Daily Checklist Widget -->
@@ -147,10 +146,11 @@
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import { getArticles } from '@/api/article';
 import { getDashboardStats } from '@/api/dashboard';
+import { getProfile } from '@/api/user';
 import { showMessage } from '@/utils/message';
 
 const nickname = ref('');
-// ... (omitting unchanged greeting)
+const bio = ref('');
 
 // Todo List Logic
 const todos = ref(JSON.parse(localStorage.getItem('daily_todos') || '[]'));
@@ -291,11 +291,25 @@ const projects = ref([
   { id: 3, name: 'Trae AI', desc: 'AI 助手集成', initial: 'T', color: '#9c27b0' }
 ]);
 
+const loadUserProfile = async () => {
+  try {
+    const data = await getProfile();
+    if (data) {
+      nickname.value = data.nickname || data.username;
+      bio.value = data.bio || '还没有填写个人介绍哦~';
+      localStorage.setItem('nickname', data.nickname);
+    }
+  } catch (error) {
+    console.log('User profile not available');
+    const storedNickname = localStorage.getItem('nickname');
+    const storedUsername = localStorage.getItem('username');
+    nickname.value = storedNickname || storedUsername || '用户';
+    bio.value = '欢迎来到我的博客！';
+  }
+};
+
 onMounted(() => {
-  const storedNickname = localStorage.getItem('nickname');
-  const storedUsername = localStorage.getItem('username');
-  nickname.value = storedNickname || storedUsername || '用户';
-  
+  loadUserProfile();
   loadLatestArticles();
   loadStats();
 
@@ -559,7 +573,8 @@ onUnmounted(() => {
   border: 1px solid var(--border-color);
 }
 
-.widget h3 {
+.widget h3,
+.project-intro-header {
   font-size: 1.1rem;
   font-weight: 700;
   margin-bottom: 20px;
@@ -857,10 +872,143 @@ onUnmounted(() => {
   line-height: 1.5;
 }
 
-/* Projects Widget Styling Fix */
-.project-details {
-  flex: 1;
+/* Honor Wall Styling */
+.honor-wall-widget {
+  background: linear-gradient(to bottom right, var(--nav-bg), var(--hover-bg));
+  border: 1px solid var(--border-color);
 }
+
+/* Announcement Widget Styling */
+.announcement-widget {
+  border-top: 4px solid var(--primary-color);
+}
+
+.announcement-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.announcement-header h3 {
+  margin-bottom: 0 !important;
+}
+
+.announcement-icon {
+  font-size: 1.2rem;
+}
+
+.announcement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.announcement-item {
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--border-color);
+}
+
+.announcement-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.announcement-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.announcement-content {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 6px;
+  white-space: pre-wrap;
+}
+
+.announcement-date {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.type-tag {
+  font-size: 0.7rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.type-tag.update { background-color: #e3f2fd; color: #2196f3; }
+.type-tag.maintenance { background-color: #fff3e0; color: #ff9800; }
+.type-tag.important { background-color: #ffebee; color: #f44336; }
+
+.honor-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.honor-header h3 {
+  margin-bottom: 0 !important;
+}
+
+.honor-icon {
+  font-size: 1.4rem;
+}
+
+.user-intro-box {
+  background-color: rgba(66, 185, 131, 0.05);
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--primary-color);
+}
+
+.user-bio {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin: 0;
+  font-style: italic;
+}
+
+.honor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.honor-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background-color: var(--bg-color);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition: transform 0.2s;
+}
+
+.honor-item:hover {
+  transform: translateX(4px);
+  color: var(--text-primary);
+}
+
+.medal {
+  font-size: 1.2rem;
+}
+
+/* Projects Widget Styling Fix (Keeping some legacy for reference if needed) */
 
 @media (max-width: 1024px) {
   .content-grid {

@@ -333,4 +333,25 @@ CREATE TABLE `statistics` (
   PRIMARY KEY (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='每日数据统计';
 
+-- ----------------------------
+-- 16. Announcements (系统公告)
+-- ----------------------------
+DROP TABLE IF EXISTS `announcements`;
+CREATE TABLE `announcements` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) NOT NULL COMMENT '公告标题',
+  `content` TEXT NOT NULL COMMENT '公告内容',
+  `type` ENUM('general', 'system_update', 'maintenance', 'important') NOT NULL DEFAULT 'general' COMMENT '公告类型',
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否置顶展示',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_is_active` (`is_active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统公告表';
+
+-- 初始数据
+INSERT INTO `announcements` (`title`, `content`, `type`, `is_active`) VALUES 
+('系统上线公告', '欢迎来到我的个人博客系统！这是我们的第一次见面。', 'important', 1),
+('版本更新 v1.0.1', '1. 修复了目录跳转逻辑\n2. 优化了个人信息设置界面\n3. 新增了系统公告功能', 'system_update', 1);
+
 SET FOREIGN_KEY_CHECKS = 1;

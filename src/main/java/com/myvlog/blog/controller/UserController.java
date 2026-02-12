@@ -78,6 +78,15 @@ public class UserController {
         return ResponseEntity.ok("Nickname updated successfully");
     }
 
+    @PutMapping("/{id}/profile")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<String> updateProfile(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+        String nickname = payload.get("nickname");
+        String bio = payload.get("bio");
+        userService.updateProfile(id, nickname, bio);
+        return ResponseEntity.ok("Profile updated successfully");
+    }
+
     @PutMapping("/{id}/email")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> updateEmail(@PathVariable Long id, @RequestBody Map<String, String> payload) {

@@ -54,6 +54,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     @Transactional
+    public void updateProfile(Long userId, String nickname, String bio) {
+        User user = getById(userId);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        if (nickname != null && !nickname.trim().isEmpty()) {
+            user.setNickname(nickname);
+        }
+        user.setBio(bio);
+        updateById(user);
+    }
+
+    @Override
+    @Transactional
     public void updateEmail(Long userId, String email) {
         if (email == null || !email.contains("@")) {
             throw new RuntimeException("Invalid email format");

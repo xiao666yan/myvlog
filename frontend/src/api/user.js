@@ -8,6 +8,14 @@ export function updateNickname(userId, nickname) {
   });
 }
 
+export function updateProfile(userId, data) {
+  return request({
+    url: `/users/${userId}/profile`,
+    method: 'put',
+    data
+  });
+}
+
 export function updateEmail(userId, email) {
   return request({
     url: `/users/${userId}/email`,

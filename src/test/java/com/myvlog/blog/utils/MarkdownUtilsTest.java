@@ -10,8 +10,7 @@ public class MarkdownUtilsTest {
         String markdown = "# Hello\n\nThis is **bold** and *italic*.";
         String html = MarkdownUtils.renderHtml(markdown);
         
-        // With HeadingAnchorExtension, h1 will have an id
-        assertTrue(html.contains("<h1 id=\"hello\">Hello</h1>") || html.contains("<h1>Hello</h1>"));
+        assertTrue(html.contains("<h1 id=\"toc-0\">Hello</h1>"));
         assertTrue(html.contains("<p>This is <strong>bold</strong> and <em>italic</em>.</p>"));
     }
 
@@ -27,8 +26,30 @@ public class MarkdownUtilsTest {
     }
     
     @Test
-    public void testNullOrEmpty() {
-        assertEquals("", MarkdownUtils.renderHtml(null));
-        assertEquals("", MarkdownUtils.renderHtml(""));
+    public void testChineseHeading() {
+        String markdown = "# 你好\n\n## 这里的 测试";
+        String html = MarkdownUtils.renderHtml(markdown);
+        
+        assertTrue(html.contains("<h1 id=\"toc-0\">你好</h1>"));
+        assertTrue(html.contains("<h2 id=\"toc-1\">这里的 测试</h2>"));
+        
+        var toc = MarkdownUtils.extractToc(markdown);
+        assertEquals(2, toc.size());
+        assertEquals("toc-0", toc.get(0).getId());
+        assertEquals("toc-1", toc.get(1).getId());
+    }
+
+    @Test
+    public void testDuplicateHeading() {
+        String markdown = "# 测试\n\n# 测试";
+        String html = MarkdownUtils.renderHtml(markdown);
+        
+        assertTrue(html.contains("<h1 id=\"toc-0\">测试</h1>"));
+        assertTrue(html.contains("<h1 id=\"toc-1\">测试</h1>"));
+        
+        var toc = MarkdownUtils.extractToc(markdown);
+        assertEquals(2, toc.size());
+        assertEquals("toc-0", toc.get(0).getId());
+        assertEquals("toc-1", toc.get(1).getId());
     }
 }

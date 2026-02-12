@@ -8,6 +8,8 @@ public interface UserService extends IService<User> {
     
     void updateNickname(Long userId, String nickname);
 
+    void updateProfile(Long userId, String nickname, String bio);
+
     void updateEmail(Long userId, String email);
     
     void updateAvatar(Long userId, String avatarUrl);

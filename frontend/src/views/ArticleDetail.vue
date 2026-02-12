@@ -26,6 +26,23 @@
 
       <img v-if="article.coverImage" :src="article.coverImage" class="cover-image" alt="文章封面" />
 
+      <!-- Article TOC -->
+      <div v-if="article.toc && article.toc.length > 0" class="article-toc">
+        <div class="toc-title">目录</div>
+        <nav class="toc-list">
+          <a 
+            v-for="(item, index) in article.toc" 
+            :key="index" 
+            :href="'#' + item.id"
+            :class="['toc-item', 'level-' + item.level]"
+            @click.prevent="scrollToId(item.id)"
+          >
+            <span class="toc-dot"></span>
+            {{ item.text }}
+          </a>
+        </nav>
+      </div>
+
       <!-- Render HTML content from backend -->
       <article class="markdown-body" v-html="article.contentHtml"></article>
 
@@ -73,6 +90,19 @@ const formatDate = (dateStr) => {
     month: 'long',
     day: 'numeric'
   });
+};
+
+const scrollToId = (id) => {
+  const element = document.getElementById(id);
+  if (element) {
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+    
+    // Update URL hash without jumping
+    history.pushState(null, null, `#${id}`);
+  }
 };
 
 onMounted(() => {
@@ -171,6 +201,78 @@ onMounted(() => {
   aspect-ratio: 21 / 9;
 }
 
+/* TOC Styles */
+.article-toc {
+  background-color: var(--hover-bg);
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 40px;
+  border: 1px solid var(--border-color);
+}
+
+.toc-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toc-title::before {
+  content: ' ';
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  background-color: var(--primary-color);
+  border-radius: 2px;
+}
+
+.toc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toc-item {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.5;
+}
+
+.toc-item:hover {
+  color: var(--primary-color);
+  transform: translateX(4px);
+}
+
+.toc-dot {
+  margin-top: 8px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--text-secondary);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.toc-item:hover .toc-dot {
+  background-color: var(--primary-color);
+  transform: scale(1.5);
+}
+
+.level-1 { font-weight: 600; color: var(--text-primary); }
+.level-2 { padding-left: 16px; }
+.level-3 { padding-left: 32px; font-size: 0.9rem; }
+.level-4 { padding-left: 48px; font-size: 0.85rem; }
+.level-5 { padding-left: 64px; font-size: 0.8rem; }
+.level-6 { padding-left: 80px; font-size: 0.8rem; }
+
 .markdown-body {
   font-size: 1.1rem;
   line-height: 1.8;
@@ -180,11 +282,15 @@ onMounted(() => {
 /* Basic Markdown Styling (should ideally use a global markdown css or library style) */
 .markdown-body :deep(h1),
 .markdown-body :deep(h2),
-.markdown-body :deep(h3) {
+.markdown-body :deep(h3),
+.markdown-body :deep(h4),
+.markdown-body :deep(h5),
+.markdown-body :deep(h6) {
   margin-top: 1.5em;
   margin-bottom: 0.8em;
   font-weight: 700;
   color: var(--text-primary);
+  scroll-margin-top: 80px; /* Offset for sticky header */
 }
 
 .markdown-body :deep(p) {

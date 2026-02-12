@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 // 3. 配置请求的授权规则
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/announcements/active").permitAll() // 开放公告接口 (移动到最前)
                         .requestMatchers("/api/auth/**").permitAll() // 开放登录注册接口
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/articles/**").permitAll() // 开放文章浏览 (仅限 GET)
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/categories/**").permitAll()

@@ -8,6 +8,7 @@
         <router-link to="/admin/categories" class="admin-link" active-class="active">分类管理</router-link>
         <router-link to="/admin/tags" class="admin-link" active-class="active">标签管理</router-link>
         <router-link to="/admin/comments" class="admin-link" active-class="active">评论管理</router-link>
+        <router-link to="/admin/announcements" class="admin-link" active-class="active">公告管理</router-link>
         <router-link to="/admin/users" class="admin-link" active-class="active">用户管理</router-link>
       </nav>
     </aside>
