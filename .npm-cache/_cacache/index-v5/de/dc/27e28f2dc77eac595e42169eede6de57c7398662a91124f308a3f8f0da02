@@ -1,0 +1,2 @@
+
+241e861f1d53794c9081b80eeef26dc79357549a	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/d3-array","integrity":null,"time":1771063275378,"size":"262","metadata":{"time":1771063275378,"url":"http://registry.npm.taobao.org/d3-array","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:13 GMT","location":"https://registry.npmmirror.com/d3-array"},"options":{"compress":true},"status":301}}

@@ -1,0 +1,2 @@
+
+8bd293e81be1ddbf5e56afe152e0ffe30fe70abb	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/js-tokens","integrity":null,"time":1771063272832,"size":"262","metadata":{"time":1771063272832,"url":"http://registry.npm.taobao.org/js-tokens","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:10 GMT","location":"https://registry.npmmirror.com/js-tokens"},"options":{"compress":true},"status":301}}

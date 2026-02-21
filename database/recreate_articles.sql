@@ -1,0 +1,40 @@
+USE myvlog;
+SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS `articles`;
+CREATE TABLE `articles` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) NOT NULL COMMENT '文章标题',
+  `slug` VARCHAR(255) NOT NULL COMMENT 'URL别名',
+  `content` LONGTEXT NOT NULL COMMENT '文章内容(Markdown)',
+  `html_content` LONGTEXT DEFAULT NULL COMMENT '渲染后的HTML(可选缓存)',
+  `summary` TEXT DEFAULT NULL COMMENT '文章摘要',
+  `cover_image` VARCHAR(255) DEFAULT NULL COMMENT '封面图片URL',
+  `author_id` BIGINT UNSIGNED NOT NULL COMMENT '作者ID',
+  `category_id` BIGINT UNSIGNED DEFAULT NULL COMMENT '分类ID',
+  `status` ENUM('draft', 'published', 'scheduled', 'hidden') NOT NULL DEFAULT 'draft' COMMENT '状态',
+  `visibility` ENUM('public', 'vip', 'paid', 'password') NOT NULL DEFAULT 'public' COMMENT '可见性',
+  `password` VARCHAR(50) DEFAULT NULL COMMENT '访问密码(当visibility=password)',
+  `price` DECIMAL(10, 2) DEFAULT 0.00 COMMENT '单篇价格(当visibility=paid)',
+  `is_top` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否置顶',
+  `allow_comment` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否允许评论',
+  `view_count` INT UNSIGNED DEFAULT 0 COMMENT '浏览量',
+  `like_count` INT UNSIGNED DEFAULT 0 COMMENT '点赞数',
+  `comment_count` INT UNSIGNED DEFAULT 0 COMMENT '评论数',
+  `word_count` INT UNSIGNED DEFAULT 0 COMMENT '字数统计',
+  `reading_time` INT UNSIGNED DEFAULT 0 COMMENT '预计阅读时间(分钟)',
+  `score` DOUBLE DEFAULT 0 COMMENT '综合热度分',
+  `published_at` DATETIME DEFAULT NULL COMMENT '发布时间',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` DATETIME DEFAULT NULL COMMENT '软删除时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_slug` (`slug`),
+  KEY `idx_author_id` (`author_id`),
+  KEY `idx_category_id` (`category_id`),
+  KEY `idx_status_published` (`status`, `published_at`),
+  KEY `idx_score` (`score`),
+  FULLTEXT KEY `ft_title_content` (`title`, `content`),
+  CONSTRAINT `fk_article_author` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `fk_article_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文章主表';
+SET FOREIGN_KEY_CHECKS=1;

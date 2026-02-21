@@ -1,0 +1,2 @@
+
+da323de1be6556e4d471ac9c7885be699f5fa3c9	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/zwitch","integrity":null,"time":1771582233468,"size":"262","metadata":{"time":1771582233468,"url":"http://registry.npm.taobao.org/zwitch","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:32 GMT","location":"https://registry.npmmirror.com/zwitch"},"options":{"compress":true},"status":301}}

@@ -1,0 +1,2 @@
+
+21dc5a339cd619b0d742ecf246703ebb8b9d78b9	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/micromark-util-encode","integrity":null,"time":1771582233589,"size":"262","metadata":{"time":1771582233589,"url":"http://registry.npm.taobao.org/micromark-util-encode","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:32 GMT","location":"https://registry.npmmirror.com/micromark-util-encode"},"options":{"compress":true},"status":301}}

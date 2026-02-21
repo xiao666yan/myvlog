@@ -1,0 +1,2 @@
+
+26521d1f490fab3eb29e891cd0f0efdab797430c	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/d3-color","integrity":null,"time":1771063276960,"size":"262","metadata":{"time":1771063276960,"url":"http://registry.npm.taobao.org/d3-color","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:15 GMT","location":"https://registry.npmmirror.com/d3-color"},"options":{"compress":true},"status":301}}

@@ -1,0 +1,2 @@
+
+6e418f39a3f61335bab60805c5c64ad04e9ecfb1	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/minipass","integrity":null,"time":1771063275749,"size":"262","metadata":{"time":1771063275749,"url":"http://registry.npm.taobao.org/minipass","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:13 GMT","location":"https://registry.npmmirror.com/minipass"},"options":{"compress":true},"status":301}}

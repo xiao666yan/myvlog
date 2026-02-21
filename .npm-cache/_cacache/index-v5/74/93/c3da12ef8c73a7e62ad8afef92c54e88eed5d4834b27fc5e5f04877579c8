@@ -1,0 +1,2 @@
+
+d630102f4412e407a6bcf22a7b279f77bd9564bc	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/is-network-error","integrity":null,"time":1771063271770,"size":"262","metadata":{"time":1771063271769,"url":"http://registry.npm.taobao.org/is-network-error","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:09 GMT","location":"https://registry.npmmirror.com/is-network-error"},"options":{"compress":true},"status":301}}

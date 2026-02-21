@@ -1,0 +1,2 @@
+
+5c914469069e5be5a429cb54d598b59a228ef944	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@lezer%2fpython","integrity":null,"time":1769477957175,"size":"262","metadata":{"time":1769477957175,"url":"http://registry.npm.taobao.org/@lezer%2fpython","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Tue, 27 Jan 2026 01:39:16 GMT","location":"https://registry.npmmirror.com/@lezer%2fpython"},"options":{"compress":true},"status":301}}

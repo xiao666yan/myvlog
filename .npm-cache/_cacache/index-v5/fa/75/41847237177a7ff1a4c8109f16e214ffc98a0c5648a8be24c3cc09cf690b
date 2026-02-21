@@ -1,0 +1,2 @@
+
+ff477cb02f8be4f0ca6283da17ba50468ff9353d	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/gcp-metadata","integrity":null,"time":1771063271987,"size":"262","metadata":{"time":1771063271987,"url":"http://registry.npm.taobao.org/gcp-metadata","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:10 GMT","location":"https://registry.npmmirror.com/gcp-metadata"},"options":{"compress":true},"status":301}}

@@ -1,0 +1,2 @@
+
+25e81d47118ac3f16e0ce8da8f005034d9c697fa	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/is-decimal","integrity":null,"time":1771582233699,"size":"262","metadata":{"time":1771582233699,"url":"http://registry.npm.taobao.org/is-decimal","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:33 GMT","location":"https://registry.npmmirror.com/is-decimal"},"options":{"compress":true},"status":301}}

@@ -1,0 +1,2 @@
+
+a26441e6c0bd25d35552da6d1c10f2efceb3cc2d	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/escape-string-regexp","integrity":null,"time":1771582234414,"size":"262","metadata":{"time":1771582234414,"url":"http://registry.npm.taobao.org/escape-string-regexp","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:33 GMT","location":"https://registry.npmmirror.com/escape-string-regexp"},"options":{"compress":true},"status":301}}

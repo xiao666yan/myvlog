@@ -1,0 +1,2 @@
+
+9921dc9632a7df7c88d1a5c4f9b32711f5b394fd	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/tiny-invariant","integrity":null,"time":1771063270264,"size":"262","metadata":{"time":1771063270264,"url":"http://registry.npm.taobao.org/tiny-invariant","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:08 GMT","location":"https://registry.npmmirror.com/tiny-invariant"},"options":{"compress":true},"status":301}}

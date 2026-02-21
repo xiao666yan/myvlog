@@ -1,0 +1,2 @@
+
+014cbea497a3722d107170748213a928f9242988	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/recharts","integrity":null,"time":1771063265696,"size":"262","metadata":{"time":1771063265696,"url":"http://registry.npm.taobao.org/recharts","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:03 GMT","location":"https://registry.npmmirror.com/recharts"},"options":{"compress":true},"status":301}}

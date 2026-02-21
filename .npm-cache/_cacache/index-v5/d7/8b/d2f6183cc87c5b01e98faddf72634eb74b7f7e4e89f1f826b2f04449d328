@@ -1,0 +1,2 @@
+
+a00ec7b950bc33498149068441181dc82b2c7256	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@babel%2fhelper-globals","integrity":null,"time":1771063272842,"size":"262","metadata":{"time":1771063272842,"url":"http://registry.npm.taobao.org/@babel%2fhelper-globals","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:10 GMT","location":"https://registry.npmmirror.com/@babel%2fhelper-globals"},"options":{"compress":true},"status":301}}

@@ -1,0 +1,2 @@
+
+e8e712749edb9dd7b64af449746bb02871d0d059	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@jridgewell%2fremapping","integrity":null,"time":1771063272149,"size":"262","metadata":{"time":1771063272149,"url":"http://registry.npm.taobao.org/@jridgewell%2fremapping","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:10 GMT","location":"https://registry.npmmirror.com/@jridgewell%2fremapping"},"options":{"compress":true},"status":301}}

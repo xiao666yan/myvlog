@@ -1,0 +1,2 @@
+
+b228005987141e7e8487ee3935a512b70d3f2708	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@lezer%2fjson","integrity":null,"time":1769477957174,"size":"262","metadata":{"time":1769477957174,"url":"http://registry.npm.taobao.org/@lezer%2fjson","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Tue, 27 Jan 2026 01:39:16 GMT","location":"https://registry.npmmirror.com/@lezer%2fjson"},"options":{"compress":true},"status":301}}

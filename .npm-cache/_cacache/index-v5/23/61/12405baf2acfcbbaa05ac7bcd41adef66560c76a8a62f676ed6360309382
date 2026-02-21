@@ -1,0 +1,2 @@
+
+5fc70687a4a5f4e919c6a3e51dc94ad802998213	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/micromark-extension-gfm-table","integrity":null,"time":1771582234080,"size":"262","metadata":{"time":1771582234080,"url":"http://registry.npm.taobao.org/micromark-extension-gfm-table","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:33 GMT","location":"https://registry.npmmirror.com/micromark-extension-gfm-table"},"options":{"compress":true},"status":301}}

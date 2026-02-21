@@ -1,0 +1,2 @@
+
+6103c9d79f7a150f4651377db4dba650957a1a9b	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@ungap%2fstructured-clone","integrity":null,"time":1771582233128,"size":"262","metadata":{"time":1771582233128,"url":"http://registry.npm.taobao.org/@ungap%2fstructured-clone","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:32 GMT","location":"https://registry.npmmirror.com/@ungap%2fstructured-clone"},"options":{"compress":true},"status":301}}

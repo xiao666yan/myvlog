@@ -1,0 +1,2 @@
+
+9e3b4b250acb9d08472d4b4ac0297579eb8cf27f	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/json-bigint","integrity":null,"time":1771063274093,"size":"262","metadata":{"time":1771063274093,"url":"http://registry.npm.taobao.org/json-bigint","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:12 GMT","location":"https://registry.npmmirror.com/json-bigint"},"options":{"compress":true},"status":301}}

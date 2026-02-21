@@ -1,0 +1,2 @@
+
+4a804c855af251332d7841e9c6fa8e7275c59230	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/dequal","integrity":null,"time":1771582233036,"size":"262","metadata":{"time":1771582233036,"url":"http://registry.npm.taobao.org/dequal","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:32 GMT","location":"https://registry.npmmirror.com/dequal"},"options":{"compress":true},"status":301}}

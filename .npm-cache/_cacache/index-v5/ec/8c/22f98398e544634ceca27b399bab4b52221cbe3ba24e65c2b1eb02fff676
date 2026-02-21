@@ -1,0 +1,2 @@
+
+731a14a835159207e5a4c8ccac5a4ab527474325	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/markdown-it-sup","integrity":null,"time":1769477956212,"size":"262","metadata":{"time":1769477956212,"url":"http://registry.npm.taobao.org/markdown-it-sup","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Tue, 27 Jan 2026 01:39:15 GMT","location":"https://registry.npmmirror.com/markdown-it-sup"},"options":{"compress":true},"status":301}}

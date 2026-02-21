@@ -1,0 +1,2 @@
+
+894914dcf4c3f988a50b04509bed667380b8097c	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/rimraf","integrity":null,"time":1771063274093,"size":"262","metadata":{"time":1771063274093,"url":"http://registry.npm.taobao.org/rimraf","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:12 GMT","location":"https://registry.npmmirror.com/rimraf"},"options":{"compress":true},"status":301}}

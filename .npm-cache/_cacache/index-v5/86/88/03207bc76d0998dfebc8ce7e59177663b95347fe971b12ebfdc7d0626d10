@@ -1,0 +1,2 @@
+
+8accd2d77b1cb3296e1e70be126423fc6940586e	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/eastasianwidth","integrity":null,"time":1771063276675,"size":"262","metadata":{"time":1771063276675,"url":"http://registry.npm.taobao.org/eastasianwidth","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:14 GMT","location":"https://registry.npmmirror.com/eastasianwidth"},"options":{"compress":true},"status":301}}

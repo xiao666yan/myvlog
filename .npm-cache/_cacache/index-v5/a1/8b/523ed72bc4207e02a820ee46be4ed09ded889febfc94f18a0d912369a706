@@ -1,0 +1,2 @@
+
+06f8d7cc849233fefd1fc34b6ceb4b559e1a4f72	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/gaxios","integrity":null,"time":1771063271766,"size":"262","metadata":{"time":1771063271760,"url":"http://registry.npm.taobao.org/gaxios","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:09 GMT","location":"https://registry.npmmirror.com/gaxios"},"options":{"compress":true},"status":301}}

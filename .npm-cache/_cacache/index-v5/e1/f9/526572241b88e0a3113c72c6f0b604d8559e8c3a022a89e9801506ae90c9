@@ -1,0 +1,2 @@
+
+355ae0a4788506ad3ef69f6453e992d0e8b598c2	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/space-separated-tokens","integrity":null,"time":1771582233040,"size":"262","metadata":{"time":1771582233040,"url":"http://registry.npm.taobao.org/space-separated-tokens","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:32 GMT","location":"https://registry.npmmirror.com/space-separated-tokens"},"options":{"compress":true},"status":301}}

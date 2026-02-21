@@ -1,0 +1,2 @@
+
+1beb4fbff66f0f87d7f919203e19de43d3c39be6	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@types%2fdebug","integrity":null,"time":1771582233589,"size":"262","metadata":{"time":1771582233589,"url":"http://registry.npm.taobao.org/@types%2fdebug","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:32 GMT","location":"https://registry.npmmirror.com/@types%2fdebug"},"options":{"compress":true},"status":301}}

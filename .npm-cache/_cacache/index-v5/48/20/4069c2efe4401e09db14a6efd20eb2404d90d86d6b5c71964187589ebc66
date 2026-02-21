@@ -1,0 +1,2 @@
+
+0b8e8cc672f16b03b4d2f07785b6d03bc8dcae7c	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/d3-path","integrity":null,"time":1771063276962,"size":"262","metadata":{"time":1771063276962,"url":"http://registry.npm.taobao.org/d3-path","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:15 GMT","location":"https://registry.npmmirror.com/d3-path"},"options":{"compress":true},"status":301}}

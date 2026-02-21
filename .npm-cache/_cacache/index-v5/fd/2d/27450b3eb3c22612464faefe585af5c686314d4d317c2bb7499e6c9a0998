@@ -1,0 +1,2 @@
+
+4522d9021545bdd1197c241f3753f752c539db6e	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/decode-named-character-reference","integrity":null,"time":1771582233463,"size":"262","metadata":{"time":1771582233463,"url":"http://registry.npm.taobao.org/decode-named-character-reference","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:32 GMT","location":"https://registry.npmmirror.com/decode-named-character-reference"},"options":{"compress":true},"status":301}}

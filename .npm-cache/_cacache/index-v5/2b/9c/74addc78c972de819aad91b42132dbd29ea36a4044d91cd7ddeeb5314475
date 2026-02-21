@@ -1,0 +1,2 @@
+
+1b26b9b80d7d553d5d15f138e365b651be61bf2a	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/character-entities-html4","integrity":null,"time":1771582233698,"size":"262","metadata":{"time":1771582233698,"url":"http://registry.npm.taobao.org/character-entities-html4","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:33 GMT","location":"https://registry.npmmirror.com/character-entities-html4"},"options":{"compress":true},"status":301}}

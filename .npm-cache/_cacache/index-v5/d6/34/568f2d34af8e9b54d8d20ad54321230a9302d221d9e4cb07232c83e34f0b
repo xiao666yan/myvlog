@@ -1,0 +1,2 @@
+
+514defe5fe18778a61c5ac1136d0065d3472c430	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/micromark-util-resolve-all","integrity":null,"time":1771582233591,"size":"262","metadata":{"time":1771582233591,"url":"http://registry.npm.taobao.org/micromark-util-resolve-all","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:32 GMT","location":"https://registry.npmmirror.com/micromark-util-resolve-all"},"options":{"compress":true},"status":301}}

@@ -1,0 +1,2 @@
+
+57f731b49ddba2c4cf0159b7cabc5986513971e1	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/gtoken","integrity":null,"time":1771063271775,"size":"262","metadata":{"time":1771063271775,"url":"http://registry.npm.taobao.org/gtoken","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:09 GMT","location":"https://registry.npmmirror.com/gtoken"},"options":{"compress":true},"status":301}}

@@ -1,0 +1,2 @@
+
+73c4567b9beed683ab79bc04e952f20c3a6aad5f	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/google-auth-library","integrity":null,"time":1771063269983,"size":"262","metadata":{"time":1771063269983,"url":"http://registry.npm.taobao.org/google-auth-library","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:08 GMT","location":"https://registry.npmmirror.com/google-auth-library"},"options":{"compress":true},"status":301}}

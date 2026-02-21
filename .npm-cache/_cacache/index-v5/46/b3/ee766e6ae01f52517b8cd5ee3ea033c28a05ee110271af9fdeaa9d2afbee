@@ -1,0 +1,2 @@
+
+357bda1526c633d2e3821b47ac7ca4845ff29324	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@tailwindcss%2foxide","integrity":null,"time":1771601568026,"size":"262","metadata":{"time":1771601568025,"url":"http://registry.npm.taobao.org/@tailwindcss%2foxide","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 15:32:47 GMT","location":"https://registry.npmmirror.com/@tailwindcss%2foxide"},"options":{"compress":true},"status":301}}

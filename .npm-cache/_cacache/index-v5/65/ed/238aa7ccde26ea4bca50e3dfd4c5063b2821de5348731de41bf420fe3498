@@ -1,0 +1,2 @@
+
+b428a6e6bebdfe3e6e9f399ec6f7ca212dd2a157	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/redux","integrity":null,"time":1771063275213,"size":"262","metadata":{"time":1771063275213,"url":"http://registry.npm.taobao.org/redux","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:13 GMT","location":"https://registry.npmmirror.com/redux"},"options":{"compress":true},"status":301}}

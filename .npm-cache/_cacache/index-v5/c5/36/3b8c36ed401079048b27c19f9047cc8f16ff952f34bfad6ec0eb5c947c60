@@ -1,0 +1,2 @@
+
+ed0ed7420c8bc2d12d775ee295b477f8c22e2055	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@types%2fcaseless","integrity":null,"time":1769437980269,"size":"262","metadata":{"time":1769437980269,"url":"http://registry.npm.taobao.org/@types%2fcaseless","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Mon, 26 Jan 2026 14:33:00 GMT","location":"https://registry.npmmirror.com/@types%2fcaseless"},"options":{"compress":true},"status":301}}

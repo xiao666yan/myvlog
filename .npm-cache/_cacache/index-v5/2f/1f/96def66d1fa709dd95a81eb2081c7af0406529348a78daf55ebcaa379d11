@@ -1,0 +1,2 @@
+
+20a945d598dcf7c18011f0d3c32fd77f09d147f6	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@tailwindcss%2foxide-linux-arm64-musl","integrity":null,"time":1771601568524,"size":"262","metadata":{"time":1771601568524,"url":"http://registry.npm.taobao.org/@tailwindcss%2foxide-linux-arm64-musl","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 15:32:48 GMT","location":"https://registry.npmmirror.com/@tailwindcss%2foxide-linux-arm64-musl"},"options":{"compress":true},"status":301}}

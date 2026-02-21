@@ -1,0 +1,2 @@
+
+efa5854f747b7c89eb1016cebd8c6e779b1425c8	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/https-proxy-agent","integrity":null,"time":1771063273992,"size":"262","metadata":{"time":1771063273992,"url":"http://registry.npm.taobao.org/https-proxy-agent","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:12 GMT","location":"https://registry.npmmirror.com/https-proxy-agent"},"options":{"compress":true},"status":301}}

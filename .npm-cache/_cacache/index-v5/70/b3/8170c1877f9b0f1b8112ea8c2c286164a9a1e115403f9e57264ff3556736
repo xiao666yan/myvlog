@@ -1,0 +1,2 @@
+
+be061ff7057c47886943afdb14eca249df666f39	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/mdast-util-gfm-strikethrough","integrity":null,"time":1771582234076,"size":"262","metadata":{"time":1771582234076,"url":"http://registry.npm.taobao.org/mdast-util-gfm-strikethrough","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:33 GMT","location":"https://registry.npmmirror.com/mdast-util-gfm-strikethrough"},"options":{"compress":true},"status":301}}

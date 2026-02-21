@@ -1,0 +1,2 @@
+
+9875dc8780e2c1dd831165a7ee9cf8283a41c295	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/lightningcss-win32-arm64-msvc","integrity":null,"time":1771601569595,"size":"262","metadata":{"time":1771601569595,"url":"http://registry.npm.taobao.org/lightningcss-win32-arm64-msvc","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 15:32:49 GMT","location":"https://registry.npmmirror.com/lightningcss-win32-arm64-msvc"},"options":{"compress":true},"status":301}}

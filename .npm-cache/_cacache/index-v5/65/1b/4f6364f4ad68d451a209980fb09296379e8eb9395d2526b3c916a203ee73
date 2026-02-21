@@ -1,0 +1,2 @@
+
+9da0905d6fa8ac787a588e579ffdd2d4edd43951	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@babel%2ftraverse","integrity":null,"time":1771063272149,"size":"262","metadata":{"time":1771063272149,"url":"http://registry.npm.taobao.org/@babel%2ftraverse","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:10 GMT","location":"https://registry.npmmirror.com/@babel%2ftraverse"},"options":{"compress":true},"status":301}}

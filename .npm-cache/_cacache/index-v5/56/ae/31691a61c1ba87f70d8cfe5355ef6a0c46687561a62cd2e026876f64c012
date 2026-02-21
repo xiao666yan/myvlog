@@ -1,0 +1,2 @@
+
+29691ae77f7d5d1d1dfac0a997a5e94d1dbf51cd	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/mdast-util-gfm-footnote","integrity":null,"time":1771582234075,"size":"262","metadata":{"time":1771582234075,"url":"http://registry.npm.taobao.org/mdast-util-gfm-footnote","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:33 GMT","location":"https://registry.npmmirror.com/mdast-util-gfm-footnote"},"options":{"compress":true},"status":301}}

@@ -1,0 +1,2 @@
+
+f7bbe87ecfd6f8d3a901d41d1eab3d601298e8c5	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@tailwindcss%2foxide-win32-arm64-msvc","integrity":null,"time":1771601568526,"size":"262","metadata":{"time":1771601568525,"url":"http://registry.npm.taobao.org/@tailwindcss%2foxide-win32-arm64-msvc","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 15:32:48 GMT","location":"https://registry.npmmirror.com/@tailwindcss%2foxide-win32-arm64-msvc"},"options":{"compress":true},"status":301}}

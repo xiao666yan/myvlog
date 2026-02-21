@@ -1,0 +1,2 @@
+
+12cb1899b8286dd1d73bd105be8ef46a5c990e23	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@protobufjs%2fcodegen","integrity":null,"time":1771063271773,"size":"262","metadata":{"time":1771063271773,"url":"http://registry.npm.taobao.org/@protobufjs%2fcodegen","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:09 GMT","location":"https://registry.npmmirror.com/@protobufjs%2fcodegen"},"options":{"compress":true},"status":301}}

@@ -1,0 +1,2 @@
+
+1220675fb2bb698297348eebd4234f084f80fe7e	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/character-reference-invalid","integrity":null,"time":1771582233699,"size":"262","metadata":{"time":1771582233699,"url":"http://registry.npm.taobao.org/character-reference-invalid","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:33 GMT","location":"https://registry.npmmirror.com/character-reference-invalid"},"options":{"compress":true},"status":301}}

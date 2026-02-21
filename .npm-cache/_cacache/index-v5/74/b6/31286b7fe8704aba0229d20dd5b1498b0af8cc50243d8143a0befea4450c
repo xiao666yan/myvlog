@@ -1,0 +1,2 @@
+
+67e15cbc2fb4ded7c5441ef28d3f2950f0620073	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/lightningcss-freebsd-x64","integrity":null,"time":1771601569601,"size":"262","metadata":{"time":1771601569601,"url":"http://registry.npm.taobao.org/lightningcss-freebsd-x64","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 15:32:49 GMT","location":"https://registry.npmmirror.com/lightningcss-freebsd-x64"},"options":{"compress":true},"status":301}}

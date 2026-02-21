@@ -1,0 +1,2 @@
+
+63cfa6b58172e9487b59687cad03999fc95a973b	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/color-convert","integrity":null,"time":1771063278444,"size":"262","metadata":{"time":1771063278444,"url":"http://registry.npm.taobao.org/color-convert","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:16 GMT","location":"https://registry.npmmirror.com/color-convert"},"options":{"compress":true},"status":301}}

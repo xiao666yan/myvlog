@@ -1,0 +1,2 @@
+
+2e32c6e992f2e6995a02bae4c37086b09c96328b	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@tailwindcss%2fnode","integrity":null,"time":1771601568007,"size":"262","metadata":{"time":1771601568007,"url":"http://registry.npm.taobao.org/@tailwindcss%2fnode","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 15:32:47 GMT","location":"https://registry.npmmirror.com/@tailwindcss%2fnode"},"options":{"compress":true},"status":301}}

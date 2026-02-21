@@ -1,0 +1,2 @@
+
+544564d028099beffb8587d2c6b51b18cba68db2	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/d3-interpolate","integrity":null,"time":1771063275376,"size":"262","metadata":{"time":1771063275376,"url":"http://registry.npm.taobao.org/d3-interpolate","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:13 GMT","location":"https://registry.npmmirror.com/d3-interpolate"},"options":{"compress":true},"status":301}}

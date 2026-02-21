@@ -1,0 +1,2 @@
+
+06b92b5a2e49e4c1b9d17ce6534e1fe75768f849	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/protobufjs","integrity":null,"time":1771063270007,"size":"262","metadata":{"time":1771063270007,"url":"http://registry.npm.taobao.org/protobufjs","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:08 GMT","location":"https://registry.npmmirror.com/protobufjs"},"options":{"compress":true},"status":301}}

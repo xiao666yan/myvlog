@@ -1,0 +1,2 @@
+
+48c9e3845d8ea876c5aaf0e74eb62fc2e0fdf66b	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/stringify-entities","integrity":null,"time":1771582233300,"size":"262","metadata":{"time":1771582233300,"url":"http://registry.npm.taobao.org/stringify-entities","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:32 GMT","location":"https://registry.npmmirror.com/stringify-entities"},"options":{"compress":true},"status":301}}

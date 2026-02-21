@@ -1,0 +1,2 @@
+
+0a4b7dc31ade62135b89b86b3e56e798ba9ce208	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/postcss-value-parser","integrity":null,"time":1771601340526,"size":"262","metadata":{"time":1771601340526,"url":"http://registry.npm.taobao.org/postcss-value-parser","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 15:29:00 GMT","location":"https://registry.npmmirror.com/postcss-value-parser"},"options":{"compress":true},"status":301}}

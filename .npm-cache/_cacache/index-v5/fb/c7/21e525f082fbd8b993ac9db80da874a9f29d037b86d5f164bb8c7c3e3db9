@@ -1,0 +1,2 @@
+
+db7f3ec89464bfbf9494af5a5fb0b38342db842f	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@codemirror%2flegacy-modes","integrity":null,"time":1769477956705,"size":"262","metadata":{"time":1769477956705,"url":"http://registry.npm.taobao.org/@codemirror%2flegacy-modes","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Tue, 27 Jan 2026 01:39:15 GMT","location":"https://registry.npmmirror.com/@codemirror%2flegacy-modes"},"options":{"compress":true},"status":301}}

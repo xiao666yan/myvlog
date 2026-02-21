@@ -1,0 +1,2 @@
+
+4cb35fc9dbd36aa67784a4e044aff8515f527e12	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/micromark-util-types","integrity":null,"time":1771582233173,"size":"262","metadata":{"time":1771582233173,"url":"http://registry.npm.taobao.org/micromark-util-types","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:32 GMT","location":"https://registry.npmmirror.com/micromark-util-types"},"options":{"compress":true},"status":301}}

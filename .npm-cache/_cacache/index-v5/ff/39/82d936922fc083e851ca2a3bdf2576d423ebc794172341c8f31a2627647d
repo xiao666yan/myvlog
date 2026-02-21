@@ -1,0 +1,2 @@
+
+39437c9f4d31eda1a62f831bb2bf105d6c5dd543	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/es-toolkit","integrity":null,"time":1771063270193,"size":"262","metadata":{"time":1771063270192,"url":"http://registry.npm.taobao.org/es-toolkit","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:08 GMT","location":"https://registry.npmmirror.com/es-toolkit"},"options":{"compress":true},"status":301}}

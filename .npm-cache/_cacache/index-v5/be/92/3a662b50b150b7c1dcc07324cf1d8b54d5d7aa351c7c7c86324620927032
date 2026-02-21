@@ -1,0 +1,2 @@
+
+2d2a40db23fc68bf04d7a14d57b0b7568e665c1a	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/lightningcss-linux-x64-gnu","integrity":null,"time":1771601569596,"size":"262","metadata":{"time":1771601569596,"url":"http://registry.npm.taobao.org/lightningcss-linux-x64-gnu","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 15:32:49 GMT","location":"https://registry.npmmirror.com/lightningcss-linux-x64-gnu"},"options":{"compress":true},"status":301}}

@@ -1,0 +1,2 @@
+
+3a831c60dc7fe5e78c4d77fde9a87d54d90620c7	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/bail","integrity":null,"time":1771582233182,"size":"262","metadata":{"time":1771582233182,"url":"http://registry.npm.taobao.org/bail","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:32 GMT","location":"https://registry.npmmirror.com/bail"},"options":{"compress":true},"status":301}}

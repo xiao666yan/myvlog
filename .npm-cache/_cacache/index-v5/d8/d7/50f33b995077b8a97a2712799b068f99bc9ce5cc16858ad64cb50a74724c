@@ -1,0 +1,2 @@
+
+7fd5da5a8d82a031dce351614c1cd1d93ef79fc9	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@protobufjs%2faspromise","integrity":null,"time":1771063271771,"size":"262","metadata":{"time":1771063271771,"url":"http://registry.npm.taobao.org/@protobufjs%2faspromise","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:09 GMT","location":"https://registry.npmmirror.com/@protobufjs%2faspromise"},"options":{"compress":true},"status":301}}

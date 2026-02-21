@@ -1,0 +1,2 @@
+
+5660565708f479d34ae46909bfae13391685c772	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/internmap","integrity":null,"time":1771063276961,"size":"262","metadata":{"time":1771063276961,"url":"http://registry.npm.taobao.org/internmap","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:15 GMT","location":"https://registry.npmmirror.com/internmap"},"options":{"compress":true},"status":301}}

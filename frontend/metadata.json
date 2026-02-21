@@ -1,0 +1,8 @@
+
+{
+  "name": "CodeCanvas",
+  "description": "A sleek, modern personal blog platform for developers and designers with AI-powered features, administrative dashboard, and responsive design.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

@@ -1,0 +1,2 @@
+
+9f2f20b64dd1736a37a285023fdb45ec48358518	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/decimal.js-light","integrity":null,"time":1771063270173,"size":"262","metadata":{"time":1771063270173,"url":"http://registry.npm.taobao.org/decimal.js-light","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:08 GMT","location":"https://registry.npmmirror.com/decimal.js-light"},"options":{"compress":true},"status":301}}

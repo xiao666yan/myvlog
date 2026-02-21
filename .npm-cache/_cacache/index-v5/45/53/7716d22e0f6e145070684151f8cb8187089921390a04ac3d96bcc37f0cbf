@@ -1,0 +1,2 @@
+
+a9937feef8607ded74316c83dd5d1ed7b4a43809	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/vfile","integrity":null,"time":1771582232636,"size":"262","metadata":{"time":1771582232635,"url":"http://registry.npm.taobao.org/vfile","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:31 GMT","location":"https://registry.npmmirror.com/vfile"},"options":{"compress":true},"status":301}}

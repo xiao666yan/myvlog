@@ -1,0 +1,2 @@
+
+79afb6ae8bb4eeb8b2b167f27b50e0755a979dc9	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/inline-style-parser","integrity":null,"time":1771582234489,"size":"262","metadata":{"time":1771582234489,"url":"http://registry.npm.taobao.org/inline-style-parser","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:33 GMT","location":"https://registry.npmmirror.com/inline-style-parser"},"options":{"compress":true},"status":301}}

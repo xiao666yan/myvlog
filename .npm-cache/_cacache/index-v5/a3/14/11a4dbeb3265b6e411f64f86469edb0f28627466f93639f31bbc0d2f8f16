@@ -1,0 +1,2 @@
+
+111ec73de5e8ec643437aef712c2ee8a161a396a	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/mdast-util-phrasing","integrity":null,"time":1771582233463,"size":"262","metadata":{"time":1771582233463,"url":"http://registry.npm.taobao.org/mdast-util-phrasing","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:32 GMT","location":"https://registry.npmmirror.com/mdast-util-phrasing"},"options":{"compress":true},"status":301}}

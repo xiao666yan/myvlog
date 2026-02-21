@@ -1,0 +1,2 @@
+
+dda86b4fc054a08d6de6011a9a764dc9cf2c9e45	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/eventemitter3","integrity":null,"time":1771063270202,"size":"262","metadata":{"time":1771063270202,"url":"http://registry.npm.taobao.org/eventemitter3","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:08 GMT","location":"https://registry.npmmirror.com/eventemitter3"},"options":{"compress":true},"status":301}}

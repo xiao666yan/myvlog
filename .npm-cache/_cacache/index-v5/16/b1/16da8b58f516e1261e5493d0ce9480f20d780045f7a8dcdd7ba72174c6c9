@@ -1,0 +1,2 @@
+
+3b7709265eb4deeb7fb3105fb0ebe7555ce5b578	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/trim-lines","integrity":null,"time":1771582233170,"size":"262","metadata":{"time":1771582233170,"url":"http://registry.npm.taobao.org/trim-lines","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:32 GMT","location":"https://registry.npmmirror.com/trim-lines"},"options":{"compress":true},"status":301}}

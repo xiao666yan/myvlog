@@ -1,0 +1,2 @@
+
+3dfb29d35e75457db9b4f30eb7065e7f414284db	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/micromark-factory-label","integrity":null,"time":1771582233856,"size":"262","metadata":{"time":1771582233856,"url":"http://registry.npm.taobao.org/micromark-factory-label","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:33 GMT","location":"https://registry.npmmirror.com/micromark-factory-label"},"options":{"compress":true},"status":301}}

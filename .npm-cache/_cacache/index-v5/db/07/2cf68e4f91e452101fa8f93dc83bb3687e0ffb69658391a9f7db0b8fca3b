@@ -1,0 +1,2 @@
+
+05eb0517887f7d91451fce9b3ffca6dfd88c7d04	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@lezer%2fsass","integrity":null,"time":1769477957176,"size":"262","metadata":{"time":1769477957176,"url":"http://registry.npm.taobao.org/@lezer%2fsass","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Tue, 27 Jan 2026 01:39:16 GMT","location":"https://registry.npmmirror.com/@lezer%2fsass"},"options":{"compress":true},"status":301}}

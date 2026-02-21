@@ -1,0 +1,2 @@
+
+adb6e9867b01c3602fd42bf8d4148d7e2b97e8da	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/bignumber.js","integrity":null,"time":1771063274421,"size":"262","metadata":{"time":1771063274421,"url":"http://registry.npm.taobao.org/bignumber.js","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 14 Feb 2026 10:01:12 GMT","location":"https://registry.npmmirror.com/bignumber.js"},"options":{"compress":true},"status":301}}

@@ -1,0 +1,2 @@
+
+1950f3781a707cfcf0bd51ae2e42ea74b45a2c92	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/style-to-object","integrity":null,"time":1771582233301,"size":"262","metadata":{"time":1771582233301,"url":"http://registry.npm.taobao.org/style-to-object","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Fri, 20 Feb 2026 10:10:32 GMT","location":"https://registry.npmmirror.com/style-to-object"},"options":{"compress":true},"status":301}}
