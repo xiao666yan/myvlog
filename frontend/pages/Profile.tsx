@@ -48,6 +48,14 @@ const Profile: React.FC<ProfileProps> = ({ onUpdate, onEditArticle }) => {
   const fetchProfile = async () => {
     setLoading(true);
     try {
+      // 检查是否有 token
+      const token = sessionStorage.getItem('token');
+      if (!token) {
+        // 未登录，跳转到登录页面
+        window.location.hash = '#login';
+        return;
+      }
+      
       const res = await getUserProfile();
       setProfile(res);
       setNickname(res.nickname || '');
@@ -55,7 +63,7 @@ const Profile: React.FC<ProfileProps> = ({ onUpdate, onEditArticle }) => {
       setBio(res.bio || '');
     } catch (error) {
       console.error('Failed to fetch profile:', error);
-      const localUser = localStorage.getItem('user');
+      const localUser = sessionStorage.getItem('user');
       if (localUser) {
         try {
           const user = JSON.parse(localUser);
@@ -65,9 +73,11 @@ const Profile: React.FC<ProfileProps> = ({ onUpdate, onEditArticle }) => {
           setBio(user.bio || '');
         } catch (e) {
           showToast('获取用户信息失败，请重新登录', 'error');
+          window.location.hash = '#login';
         }
       } else {
         showToast('获取用户信息失败，请重新登录', 'error');
+        window.location.hash = '#login';
       }
     } finally {
       setLoading(false);

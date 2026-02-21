@@ -51,15 +51,21 @@ const Home: React.FC<HomeProps> = ({ onPostClick, onCategoryClick, onTagClick })
         const tagsRes = await getTags().catch(() => []);
         setTags(Array.isArray(tagsRes) ? tagsRes : ((tagsRes as any).records || (tagsRes as any).data || []));
         
-        // 4. 获取用户信息（可选，失败时使用模拟数据）
-        try {
-          const profileRes = await getUserProfile();
-          if (profileRes && !(profileRes as any).message) {
-            setUserProfile(profileRes);
+        // 4. 获取用户信息（可选，仅在有 token 时发送请求）
+        const token = sessionStorage.getItem('token');
+        if (token) {
+          try {
+            const profileRes = await getUserProfile();
+            if (profileRes && !(profileRes as any).message) {
+              setUserProfile(profileRes);
+            }
+          } catch (error) {
+            console.log('Failed to get user profile, using mock profile');
+            // 保持使用 MOCK_USER，不需要额外设置
           }
-        } catch (error) {
-          console.log('User not logged in, using mock profile');
-          // 保持使用 MOCK_USER，不需要额外设置
+        } else {
+          console.log('No token found, using mock profile');
+          // 未登录，直接使用 MOCK_USER
         }
       } catch (error) {
         console.error('Failed to fetch home data:', error);

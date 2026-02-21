@@ -137,6 +137,9 @@ const App: React.FC = () => {
   };
 
   const renderContent = () => {
+    // 检查是否有 token
+    const token = sessionStorage.getItem('token');
+    
     switch (activeTab) {
       case 'home':
         return <Home onPostClick={handlePostClick} onCategoryClick={handleCategoryClick} onTagClick={handleTagClick} />;
@@ -147,11 +150,11 @@ const App: React.FC = () => {
       case 'search':
         return <Search onPostClick={handlePostClick} initialCategoryId={searchFilters.categoryId} initialTagId={searchFilters.tagId} />;
       case 'profile':
-        return currentUser ? <Profile onUpdate={handleProfileUpdate} onEditArticle={handleEditArticle} /> : <AuthPage onLoginSuccess={(user) => { setCurrentUser(user); navigateTo('home'); }} />;
+        return token && currentUser ? <Profile onUpdate={handleProfileUpdate} onEditArticle={handleEditArticle} /> : <AuthPage onLoginSuccess={(user) => { setCurrentUser(user); navigateTo('home'); }} />;
       case 'create':
-        return currentUser ? <Editor initialArticle={editingArticle} onSave={handleSaveArticle} /> : <AuthPage onLoginSuccess={(user) => { setCurrentUser(user); navigateTo('create'); }} />;
+        return token && currentUser ? <Editor initialArticle={editingArticle} onSave={handleSaveArticle} /> : <AuthPage onLoginSuccess={(user) => { setCurrentUser(user); navigateTo('create'); }} />;
       case 'admin':
-        return (currentUser && currentUser.role && currentUser.role.toUpperCase() === 'ADMIN') ? <AdminDashboard onEditArticle={handleEditArticle} /> : <div>无权访问</div>;
+        return token && currentUser && currentUser.role && currentUser.role.toUpperCase() === 'ADMIN' ? <AdminDashboard onEditArticle={handleEditArticle} /> : <div>无权访问</div>;
       case 'login':
         return <AuthPage onLoginSuccess={(user) => { setCurrentUser(user); navigateTo('home'); }} initialMode="login" />;
       case 'register':
