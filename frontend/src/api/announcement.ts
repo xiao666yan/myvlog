@@ -36,3 +36,10 @@ export const deleteAnnouncement = (id: number) => {
     method: 'delete'
   });
 };
+
+export const markAnnouncementAsRead = (id: number) => {
+  return request({
+    url: `/announcements/${id}/read`,
+    method: 'post'
+  });
+};

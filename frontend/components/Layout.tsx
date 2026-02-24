@@ -5,7 +5,7 @@ import {
 } from 'lucide-react';
 import { MOCK_USER } from '../constants.tsx';
 import { logout } from '../src/api/auth';
-import { getActiveAnnouncements } from '../src/api/announcement';
+import { getActiveAnnouncements, markAnnouncementAsRead } from '../src/api/announcement';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -65,11 +65,8 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onNavigate, curren
 
         if (activeList.length > 0) {
           const latest = activeList[0];
-          const userId = currentUser?.id || 'guest';
-          const lastSeenKey = `last_seen_announcement_${userId}`;
-          const lastSeenId = localStorage.getItem(lastSeenKey);
           
-          if (lastSeenId !== String(latest.id)) {
+          if (!latest.hasRead) {
             setHasUnread(true);
             setCurrentAnnounce(latest);
             setShowAnnouncePopup(true);
@@ -88,24 +85,30 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onNavigate, curren
     return () => window.removeEventListener('announcement-updated', fetchAnnouncements);
   }, [currentUser?.id, initialized]);
 
-  const openAnnouncements = () => {
+  const openAnnouncements = async () => {
     if (announcements.length > 0) {
       setCurrentAnnounce(announcements[0]);
       setShowAnnouncePopup(true);
       setHasUnread(false);
-      const userId = currentUser?.id || 'guest';
-      const lastSeenKey = `last_seen_announcement_${userId}`;
-      localStorage.setItem(lastSeenKey, String(announcements[0].id));
+      if (currentUser && announcements[0]) {
+        try {
+          await markAnnouncementAsRead(announcements[0].id);
+        } catch (error) {
+          console.error('Failed to mark announcement as read:', error);
+        }
+      }
     }
   };
 
-  const closePopup = () => {
+  const closePopup = async () => {
     setShowAnnouncePopup(false);
     setHasUnread(false);
-    if (currentAnnounce) {
-      const userId = currentUser?.id || 'guest';
-      const lastSeenKey = `last_seen_announcement_${userId}`;
-      localStorage.setItem(lastSeenKey, String(currentAnnounce.id));
+    if (currentUser && currentAnnounce) {
+      try {
+        await markAnnouncementAsRead(currentAnnounce.id);
+      } catch (error) {
+        console.error('Failed to mark announcement as read:', error);
+      }
     }
   };
 

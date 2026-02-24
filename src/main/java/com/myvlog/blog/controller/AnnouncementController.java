@@ -2,14 +2,22 @@ package com.myvlog.blog.controller;
 
 import com.myvlog.blog.dto.AnnouncementDto;
 import com.myvlog.blog.entity.Announcement;
+import com.myvlog.blog.entity.User;
 import com.myvlog.blog.service.AnnouncementService;
+import com.myvlog.blog.service.UserAnnouncementReadService;
+import com.myvlog.blog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -18,6 +26,8 @@ import java.util.stream.Collectors;
 public class AnnouncementController {
 
     private final AnnouncementService announcementService;
+    private final UserAnnouncementReadService userAnnouncementReadService;
+    private final UserService userService;
 
     @GetMapping("/active")
     public ResponseEntity<?> getActiveAnnouncements() {
@@ -27,20 +37,43 @@ public class AnnouncementController {
             if (announcements == null) {
                 return ResponseEntity.ok(java.util.Collections.emptyList());
             }
-            List<AnnouncementDto> dtos = announcements.stream().map(a -> {
-                AnnouncementDto dto = new AnnouncementDto();
+            
+            User currentUser = tryGetCurrentUser();
+            List<Long> readIds = currentUser != null 
+                ? userAnnouncementReadService.getReadAnnouncementIds(currentUser.getId())
+                : java.util.Collections.emptyList();
+            
+            List<Map<String, Object>> result = announcements.stream().map(a -> {
+                Map<String, Object> item = new HashMap<>();
                 try {
-                    BeanUtils.copyProperties(a, dto);
+                    BeanUtils.copyProperties(a, item);
+                    item.put("hasRead", readIds.contains(a.getId()));
                 } catch (Exception e) {
                     System.err.println("ERROR: BeanUtils copy failed for announcement ID " + a.getId());
                 }
-                return dto;
+                return item;
             }).collect(Collectors.toList());
-            return ResponseEntity.ok(dtos);
+            return ResponseEntity.ok(result);
         } catch (Exception e) {
             System.err.println("ERROR in getActiveAnnouncements: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(500).body(java.util.Map.of("error", "获取公告失败: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/{id}/read")
+    public ResponseEntity<?> markAsRead(@PathVariable Long id) {
+        try {
+            User currentUser = getCurrentUser();
+            if (currentUser == null) {
+                return ResponseEntity.status(401).body(Map.of("error", "请先登录"));
+            }
+            userAnnouncementReadService.markAsRead(currentUser.getId(), id);
+            return ResponseEntity.ok(Map.of("success", true));
+        } catch (Exception e) {
+            System.err.println("ERROR in markAsRead: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of("error", "标记失败: " + e.getMessage()));
         }
     }
 
@@ -85,5 +118,22 @@ public class AnnouncementController {
     public ResponseEntity<Void> deleteAnnouncement(@PathVariable Long id) {
         announcementService.removeById(id);
         return ResponseEntity.ok().build();
+    }
+
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+            return userService.getByUsername(username);
+        }
+        throw new RuntimeException("未登录");
+    }
+
+    private User tryGetCurrentUser() {
+        try {
+            return getCurrentUser();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
