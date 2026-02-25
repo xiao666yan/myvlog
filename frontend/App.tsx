@@ -98,12 +98,18 @@ const App: React.FC = () => {
         return;
       }
       
+      if (!articleData.category) {
+        showToast('请选择分类', 'error');
+        return;
+      }
+      
       const payload = {
         title: articleData.title,
         content: articleData.content,
         summary: articleData.content.substring(0, 150),
         categoryId: articleData.category,
         tagIds: articleData.selectedTags || [],
+        columnIds: articleData.selectedColumns || [],
         coverImage: articleData.coverImage || null,
         status: 'published'
       };

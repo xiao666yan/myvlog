@@ -7,15 +7,19 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.myvlog.blog.dto.*;
 import com.myvlog.blog.entity.Article;
+import com.myvlog.blog.entity.ArticleColumn;
 import com.myvlog.blog.entity.ArticleLike;
 import com.myvlog.blog.entity.Category;
+import com.myvlog.blog.entity.Column;
 import com.myvlog.blog.entity.User;
 import com.myvlog.blog.enums.ArticleStatus;
 import com.myvlog.blog.enums.ArticleVisibility;
+import com.myvlog.blog.mapper.ArticleColumnMapper;
 import com.myvlog.blog.mapper.ArticleLikeMapper;
 import com.myvlog.blog.mapper.ArticleMapper;
 import com.myvlog.blog.mapper.ArticleTagMapper;
 import com.myvlog.blog.mapper.CategoryMapper;
+import com.myvlog.blog.mapper.ColumnMapper;
 import com.myvlog.blog.mapper.TagMapper;
 import com.myvlog.blog.mapper.UserMapper;
 import com.myvlog.blog.service.ArticleService;
@@ -45,9 +49,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     private final UserMapper userMapper;
     private final CategoryMapper categoryMapper;
+    private final ColumnMapper columnMapper;
     private final ArticleMapper articleMapper;
     private final ArticleLikeMapper articleLikeMapper;
     private final ArticleTagMapper articleTagMapper;
+    private final ArticleColumnMapper articleColumnMapper;
     private final TagMapper tagMapper;
     private final com.myvlog.blog.service.SubscriberService subscriberService;
     private final com.myvlog.blog.service.WebhookService webhookService;
@@ -240,6 +246,16 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             }
         }
         
+        // Handle Columns
+        if (request.getColumnIds() != null && !request.getColumnIds().isEmpty()) {
+            for (Long columnId : request.getColumnIds()) {
+                ArticleColumn articleColumn = new ArticleColumn();
+                articleColumn.setArticleId(article.getId());
+                articleColumn.setColumnId(columnId);
+                articleColumnMapper.insert(articleColumn);
+            }
+        }
+        
         return mapToResponse(article, currentUser);
     }
 
@@ -288,6 +304,21 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 articleTag.setArticleId(article.getId());
                 articleTag.setTagId(tagId);
                 articleTagMapper.insert(articleTag);
+            }
+        }
+        
+        // Handle Columns Update
+        if (request.getColumnIds() != null) {
+            // Delete existing
+            articleColumnMapper.delete(new LambdaQueryWrapper<ArticleColumn>()
+                    .eq(ArticleColumn::getArticleId, article.getId()));
+            
+            // Insert new
+            for (Long columnId : request.getColumnIds()) {
+                ArticleColumn articleColumn = new ArticleColumn();
+                articleColumn.setArticleId(article.getId());
+                articleColumn.setColumnId(columnId);
+                articleColumnMapper.insert(articleColumn);
             }
         }
         
@@ -688,6 +719,21 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 return dto;
             }).collect(Collectors.toList());
             response.setTags(tagDtos);
+        }
+        
+        // Fill Columns
+        List<ArticleColumn> articleColumns = articleColumnMapper.selectList(new LambdaQueryWrapper<ArticleColumn>()
+                .eq(ArticleColumn::getArticleId, article.getId()));
+        if (!articleColumns.isEmpty()) {
+            List<Long> columnIds = articleColumns.stream().map(ArticleColumn::getColumnId).collect(Collectors.toList());
+            List<Column> columns = columnMapper.selectBatchIds(columnIds);
+            List<ColumnDto> columnDtos = columns.stream().map(col -> {
+                ColumnDto dto = new ColumnDto();
+                BeanUtils.copyProperties(col, dto);
+                return dto;
+            }).collect(Collectors.toList());
+            response.setColumns(columnDtos);
+            response.setColumnIds(columnIds);
         }
         
         return response;

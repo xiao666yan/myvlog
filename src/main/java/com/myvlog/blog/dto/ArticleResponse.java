@@ -21,6 +21,8 @@ public class ArticleResponse {
     private UserDto author;
     private CategoryDto category;
     private List<TagDto> tags;
+    private List<ColumnDto> columns;
+    private List<Long> columnIds;
 
     private ArticleStatus status;
     private ArticleVisibility visibility;

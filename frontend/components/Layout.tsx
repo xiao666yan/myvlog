@@ -103,7 +103,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onNavigate, curren
   const closePopup = async () => {
     setShowAnnouncePopup(false);
     setHasUnread(false);
-    if (currentUser && currentAnnounce) {
+    if (currentUser && currentAnnounce && currentAnnounce.id) {
       try {
         await markAnnouncementAsRead(currentAnnounce.id);
       } catch (error) {

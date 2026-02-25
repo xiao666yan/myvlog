@@ -10,6 +10,7 @@ import { suggestTags } from '../services/geminiService.ts';
 import { useToast } from '../context/ToastContext';
 import { getCategories } from '../src/api/category';
 import { getTags } from '../src/api/tag';
+import { getColumns } from '../src/api/column';
 import { uploadFile } from '../src/api/upload';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -22,12 +23,14 @@ interface EditorProps {
 const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
   const [title, setTitle] = useState(initialArticle?.title || '');
   const [content, setContent] = useState(initialArticle?.content || '');
-  const [category, setCategory] = useState<number>(initialArticle?.categoryId || 0);
+  const [category, setCategory] = useState<number | null>(initialArticle?.categoryId ?? null);
   const [selectedTags, setSelectedTags] = useState<number[]>(initialArticle?.tags?.map((t: any) => t.id) || []);
   const [coverImage, setCoverImage] = useState(initialArticle?.coverImage || '');
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
   const [tags, setTags] = useState<any[]>([]);
+  const [columns, setColumns] = useState<any[]>([]);
+  const [selectedColumns, setSelectedColumns] = useState<number[]>(initialArticle?.columnIds || initialArticle?.columns?.map((c: any) => c.id) || []);
   const [viewMode, setViewMode] = useState<'edit' | 'preview' | 'split'>('split');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [history, setHistory] = useState<string[]>([initialArticle?.content || '']);
@@ -41,16 +44,19 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
     if (initialArticle) {
       setTitle(initialArticle.title || '');
       setContent(initialArticle.content || '');
-      setCategory(initialArticle.categoryId || 0);
+      // 编辑文章时保持原有分类，不强制设置为0
+      setCategory(initialArticle.categoryId ?? null);
       setSelectedTags(initialArticle.tags?.map((t: any) => t.id) || initialArticle.tagIds || []);
+      setSelectedColumns(initialArticle.columnIds || initialArticle.columns?.map((c: any) => c.id) || []);
       setCoverImage(initialArticle.coverImage || '');
       setHistory([initialArticle.content || '']);
       setHistoryIndex(0);
     } else {
       setTitle('');
       setContent('');
-      setCategory(0);
+      setCategory(null);
       setSelectedTags([]);
+      setSelectedColumns([]);
       setCoverImage('');
       setHistory(['']);
       setHistoryIndex(0);
@@ -60,18 +66,23 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
   useEffect(() => {
     const fetchMetadata = async () => {
       try {
-        const [categoriesRes, tagsRes] = await Promise.all([
+        const [categoriesRes, tagsRes, columnsRes] = await Promise.all([
           getCategories(),
-          getTags()
+          getTags(),
+          getColumns()
         ]);
         const fetchedCategories = Array.isArray(categoriesRes) ? categoriesRes : (categoriesRes.data || []);
         const fetchedTags = Array.isArray(tagsRes) ? tagsRes : (tagsRes.records || tagsRes.data || tagsRes || []);
+        const fetchedColumns = Array.isArray(columnsRes) ? columnsRes : ((columnsRes as any).data || (columnsRes as any).records || []);
         setCategories(fetchedCategories);
         setTags(fetchedTags);
+        setColumns(fetchedColumns);
         
-        if (!initialArticle && fetchedCategories.length > 0 && category === 0) {
+        // 只在新建文章且未选择分类时，自动选择第一个分类
+        if (!initialArticle && fetchedCategories.length > 0 && category === null) {
           setCategory(fetchedCategories[0].id);
         }
+        // 编辑文章时，保持原有分类不变
       } catch (error) {
         console.error('Failed to fetch metadata:', error);
       }
@@ -97,7 +108,7 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
             break;
           case 's':
             e.preventDefault();
-            onSave({ title, content, category, selectedTags });
+            onSave({ title, content, category, selectedTags, selectedColumns });
             break;
           case 'z':
             e.preventDefault();
@@ -376,7 +387,7 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
             草稿
           </button>
           <button 
-            onClick={() => onSave({ title, content, category, selectedTags, coverImage })}
+            onClick={() => onSave({ title, content, category, selectedTags, selectedColumns, coverImage })}
             className="px-6 py-2 bg-primary-600 text-white rounded-xl font-semibold shadow-lg shadow-primary-500/20 hover:bg-primary-700 transition-all flex items-center"
           >
             <Save size={18} className="mr-2" /> 发布
@@ -519,11 +530,12 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
 
             <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6">
               <h3 className="font-bold mb-4 flex items-center"><Layout size={18} className="mr-2" /> 分类</h3>
-              <select 
+              <select
                 className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2"
                 value={category || ''}
                 onChange={(e) => setCategory(Number(e.target.value))}
               >
+                <option value="">请选择分类</option>
                 {categories.length > 0 ? categories.map(cat => (
                   <option key={cat.id} value={cat.id}>{cat.name}</option>
                 )) : MOCK_CATEGORIES.map(cat => (
@@ -569,6 +581,39 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
                     {tag.name}
                   </button>
                 ))}
+              </div>
+            </div>
+
+            {/* Column Selection */}
+            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center text-gray-900 dark:text-white font-bold">
+                  <Columns size={18} className="mr-2 text-primary-600" />
+                  所属专栏
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {columns.length > 0 ? columns.map(column => (
+                  <button
+                    key={column.id}
+                    onClick={() => {
+                      if (selectedColumns.includes(column.id)) {
+                        setSelectedColumns(selectedColumns.filter(id => id !== column.id));
+                      } else {
+                        setSelectedColumns([...selectedColumns, column.id]);
+                      }
+                    }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
+                      selectedColumns.includes(column.id)
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'bg-transparent text-gray-500 border-gray-200 dark:border-gray-700'
+                    }`}
+                  >
+                    {column.name}
+                  </button>
+                )) : (
+                  <span className="text-sm text-gray-400">暂无专栏，请在管理后台创建</span>
+                )}
               </div>
             </div>
           </div>

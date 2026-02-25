@@ -247,97 +247,96 @@ const Archive: React.FC<ArchiveProps> = ({ onPostClick }) => {
     return date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
-  const buildTree = (parentId: string | null): React.ReactNode => {
-    const children = columns.filter(c =>
-      parentId === null ? !c.parentId : c.parentId?.toString() === parentId
-    );
-    if (children.length === 0) return null;
+  const renderColumnNode = (col: Column, level: number = 0): React.ReactNode => {
+    const hasChildren = col.children && col.children.length > 0;
+    const isExpanded = expandedCols.has(col.id.toString());
+    const isArticlesExpanded = expandedArticles.has(col.id.toString());
+    const isSelected = selectedColumnId === col.id.toString();
+    const articles = columnArticles[col.id.toString()] || [];
 
     return (
-      <ul className={`${parentId ? 'pl-4' : ''} space-y-1`}>
-        {children.map(col => {
-          const hasChildren = columns.some(c => c.parentId?.toString() === col.id.toString());
-          const isExpanded = expandedCols.has(col.id.toString());
-          const isArticlesExpanded = expandedArticles.has(col.id.toString());
-          const isSelected = selectedColumnId === col.id.toString();
-          const articles = columnArticles[col.id.toString()] || [];
-
-          return (
-            <li key={col.id} className="select-none">
+      <li key={col.id} className="select-none">
+        <div
+          className={`flex items-center py-2 px-3 rounded-lg transition-colors cursor-pointer ${
+            isSelected
+              ? 'bg-primary-600 text-white'
+              : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
+          }`}
+          onClick={() => handleColumnClick(col.id.toString())}
+        >
+          {hasChildren ? (
+            <button
+              onClick={(e) => toggleExpand(col.id.toString(), e)}
+              className={`p-1 mr-1 rounded hover:bg-black/10 ${isSelected ? 'text-white' : 'text-gray-500'}`}
+            >
+              {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            </button>
+          ) : (
+            <span className="w-6" />
+          )}
+          <BookOpen size={16} className={`mr-2 ${isSelected ? 'text-primary-200' : 'text-primary-600'}`} />
+          <span
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleArticleExpand(col.id.toString(), e);
+            }}
+            className="flex-1 truncate text-sm font-medium cursor-pointer"
+          >
+            {col.name}
+          </span>
+          {col.articleCount !== undefined && col.articleCount > 0 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleArticleExpand(col.id.toString(), e);
+              }}
+              className={`text-[10px] px-1.5 py-0.5 rounded-full transition-colors ${
+                isSelected
+                  ? 'bg-primary-700 hover:bg-primary-800'
+                  : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'
+              }`}
+            >
+              {col.articleCount}
+            </button>
+          )}
+        </div>
+        {isArticlesExpanded && articles.length > 0 && (
+          <div className="mt-1 ml-4 space-y-1">
+            {articles.map(article => (
               <div
-                className={`flex items-center py-2 px-3 rounded-lg transition-colors cursor-pointer ${
-                  isSelected
-                    ? 'bg-primary-600 text-white'
-                    : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
+                key={article.id}
+                onClick={() => {
+                  setSelectedArticle(article);
+                  setViewMode('preview');
+                  setSelectedColumnId(col.id.toString());
+                }}
+                className={`flex items-center py-1.5 px-3 rounded cursor-pointer text-sm transition-colors ${
+                  selectedArticle?.id === article.id
+                    ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300'
+                    : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'
                 }`}
-                onClick={() => handleColumnClick(col.id.toString())}
               >
-                {hasChildren ? (
-                  <button
-                    onClick={(e) => toggleExpand(col.id.toString(), e)}
-                    className={`p-1 mr-1 rounded hover:bg-black/10 ${isSelected ? 'text-white' : 'text-gray-500'}`}
-                  >
-                    {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-                  </button>
-                ) : (
-                  <span className="w-6" />
-                )}
-                <BookOpen size={16} className={`mr-2 ${isSelected ? 'text-primary-200' : 'text-primary-600'}`} />
-                <span
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleArticleExpand(col.id.toString(), e);
-                  }}
-                  className="flex-1 truncate text-sm font-medium cursor-pointer"
-                >
-                  {col.name}
-                </span>
-                {col.articleCount !== undefined && col.articleCount > 0 && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleArticleExpand(col.id.toString(), e);
-                    }}
-                    className={`text-[10px] px-1.5 py-0.5 rounded-full transition-colors ${
-                      isSelected
-                        ? 'bg-primary-700 hover:bg-primary-800'
-                        : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'
-                    }`}
-                  >
-                    {col.articleCount}
-                  </button>
-                )}
+                <FileText size={14} className="mr-2 flex-shrink-0" />
+                <span className="truncate">{article.title}</span>
               </div>
-              {isArticlesExpanded && articles.length > 0 && (
-                <div className="mt-1 ml-4 space-y-1">
-                  {articles.map(article => (
-                    <div
-                      key={article.id}
-                      onClick={() => {
-                        setSelectedArticle(article);
-                        setViewMode('preview');
-                        setSelectedColumnId(col.id.toString());
-                      }}
-                      className={`flex items-center py-1.5 px-3 rounded cursor-pointer text-sm transition-colors ${
-                        selectedArticle?.id === article.id
-                          ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300'
-                          : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'
-                      }`}
-                    >
-                      <FileText size={14} className="mr-2 flex-shrink-0" />
-                      <span className="truncate">{article.title}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {hasChildren && isExpanded && (
-                <div className="mt-1 border-l border-gray-200 dark:border-gray-700 ml-4">
-                  {buildTree(col.id.toString())}
-                </div>
-              )}
-            </li>
-          );
-        })}
+            ))}
+          </div>
+        )}
+        {hasChildren && isExpanded && (
+          <ul className={`pl-4 space-y-1 mt-1 border-l border-gray-200 dark:border-gray-700 ml-4`}>
+            {col.children!.map(child => renderColumnNode(child, level + 1))}
+          </ul>
+        )}
+      </li>
+    );
+  };
+
+  const buildTree = (): React.ReactNode => {
+    if (columns.length === 0) return null;
+
+    return (
+      <ul className="space-y-1">
+        {columns.map(col => renderColumnNode(col, 0))}
       </ul>
     );
   };
@@ -383,7 +382,7 @@ const Archive: React.FC<ArchiveProps> = ({ onPostClick }) => {
           </button>
         </div>
         <div className="flex-1 overflow-y-auto p-3 custom-scrollbar">
-          {buildTree(null)}
+          {buildTree()}
         </div>
 
       </div>

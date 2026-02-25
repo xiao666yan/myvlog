@@ -1,5 +1,6 @@
 -- 专栏功能数据库表
 -- Created at: 2026-02-24
+-- Database: MySQL
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;

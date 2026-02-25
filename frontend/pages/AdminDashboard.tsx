@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   BarChart3, FileText, FolderTree, Tag, Users, Bell, 
   Settings, MoreVertical, Edit, Trash2, Plus, 
-  TrendingUp, TrendingDown, Clock
+  TrendingUp, TrendingDown, Clock, Library
 } from 'lucide-react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, 
@@ -15,6 +15,7 @@ import { getCategories, createCategory, updateCategory, deleteCategory } from '.
 import { getTags, createTag, updateTag, deleteTag } from '../src/api/tag';
 import { getUsers, updateUserProfile, deleteUser } from '../src/api/user';
 import { getAnnouncements, createAnnouncement, updateAnnouncement, deleteAnnouncement } from '../src/api/announcement';
+import { getColumns, getColumnTree, createColumn, updateColumn, deleteColumn } from '../src/api/column';
 import { useToast } from '../context/ToastContext';
 
 const formatDate = (dateStr: string | undefined): string => {
@@ -34,6 +35,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
   const [articles, setArticles] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [tags, setTags] = useState<any[]>([]);
+  const [columns, setColumns] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -41,12 +43,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
 
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<'category' | 'tag' | 'user' | 'announcement'>('category');
+  const [modalType, setModalType] = useState<'category' | 'tag' | 'column' | 'user' | 'announcement'>('category');
   const [editingItem, setEditingItem] = useState<any>(null);
-  const [formData, setFormData] = useState<any>({ name: '', slug: '', description: '', title: '', content: '', type: 'general', isActive: true });
+  const [formData, setFormData] = useState<any>({ name: '', slug: '', description: '', title: '', content: '', type: 'general', isActive: true, parentId: '' });
 
   // Delete confirmation state
-  const [deleteConfirm, setDeleteConfirm] = useState<{show: boolean, type: 'article' | 'category' | 'tag' | 'user' | 'announcement', id: number | null}>({
+  const [deleteConfirm, setDeleteConfirm] = useState<{show: boolean, type: 'article' | 'category' | 'tag' | 'column' | 'user' | 'announcement', id: number | null}>({
     show: false,
     type: 'article',
     id: null
@@ -74,6 +76,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
       } else if (activeTab === 'tags') {
         const res = await getTags();
         setTags(Array.isArray(res) ? res : ((res as any).data || (res as any).records || res || []));
+      } else if (activeTab === 'columns') {
+        const res = await getColumnTree();
+        setColumns(Array.isArray(res) ? res : ((res as any).data || (res as any).records || res || []));
       } else if (activeTab === 'users') {
         const res = await getUsers();
         setUsers(Array.isArray(res) ? res : ((res as any).records || []));
@@ -89,7 +94,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
     }
   };
 
-  const confirmDelete = (type: 'article' | 'category' | 'tag' | 'user' | 'announcement', id: number) => {
+  const confirmDelete = (type: 'article' | 'category' | 'tag' | 'column' | 'user' | 'announcement', id: number) => {
     setDeleteConfirm({ show: true, type, id });
   };
 
@@ -107,6 +112,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
       } else if (type === 'tag') {
         await deleteTag(id);
         setTags(tags.filter(t => t.id !== id));
+      } else if (type === 'column') {
+        await deleteColumn(id);
+        setColumns(columns.filter(c => c.id !== id));
       } else if (type === 'user') {
         await deleteUser(id);
         setUsers(users.filter(u => u.id !== id));
@@ -125,10 +133,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
   const handleDeleteArticle = (id: number) => confirmDelete('article', id);
   const handleDeleteCategory = (id: number) => confirmDelete('category', id);
   const handleDeleteTag = (id: number) => confirmDelete('tag', id);
+  const handleDeleteColumn = (id: number) => confirmDelete('column', id);
   const handleDeleteUser = (id: number) => confirmDelete('user', id);
   const handleDeleteAnnouncement = (id: number) => confirmDelete('announcement', id);
 
-  const openModal = (type: 'category' | 'tag' | 'user' | 'announcement', item: any = null) => {
+  const openModal = (type: 'category' | 'tag' | 'column' | 'user' | 'announcement', item: any = null) => {
     setModalType(type);
     setEditingItem(item);
     if (type === 'user') {
@@ -138,6 +147,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
         bio: item.bio || '',
         email: item.email || ''
       } : { nickname: '', role: 'user', bio: '', email: '' });
+    } else if (type === 'column') {
+      setFormData(item ? {
+        name: item.name || '',
+        description: item.description || '',
+        parentId: item.parentId || '',
+        coverImage: item.coverImage || ''
+      } : { name: '', description: '', parentId: '', coverImage: '' });
     } else if (type === 'announcement') {
       setFormData(item ? {
         title: item.title || '',
@@ -176,6 +192,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
           showToast('创建成功', 'success');
         }
         fetchData();
+      } else if (modalType === 'column') {
+        const submitData = {
+          ...formData,
+          parentId: formData.parentId ? Number(formData.parentId) : null
+        };
+        if (editingItem) {
+          await updateColumn(editingItem.id, submitData);
+          showToast('修改成功', 'success');
+        } else {
+          await createColumn(submitData);
+          showToast('创建成功', 'success');
+        }
+        fetchData();
       } else if (modalType === 'user') {
         if (editingItem) {
           await updateUserProfile(editingItem.id, formData);
@@ -205,6 +234,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
     { id: 'articles', label: '文章', icon: FileText },
     { id: 'categories', label: '分类', icon: FolderTree },
     { id: 'tags', label: '标签', icon: Tag },
+    { id: 'columns', label: '专栏', icon: Library },
     { id: 'users', label: '用户', icon: Users },
     { id: 'announcements', label: '公告', icon: Bell },
   ];
@@ -516,6 +546,106 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
           </div>
         )}
 
+        {/* Column Management */}
+        {activeTab === 'columns' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">专栏管理</h2>
+              <button
+                onClick={() => openModal('column')}
+                className="bg-primary-600 text-white px-4 py-2 rounded-xl flex items-center font-bold shadow-lg shadow-primary-500/20"
+              >
+                <Plus size={18} className="mr-2" /> 新建专栏
+              </button>
+            </div>
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden">
+              <table className="w-full text-left">
+                <thead className="bg-gray-50 dark:bg-gray-800 text-xs font-bold text-gray-400 uppercase tracking-widest">
+                  <tr>
+                    <th className="px-6 py-4">专栏名称</th>
+                    <th className="px-6 py-4">描述</th>
+                    <th className="px-6 py-4">文章数</th>
+                    <th className="px-6 py-4 text-right">操作</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                  {(() => {
+                    const renderColumnRow = (col: any, level: number = 0): React.ReactNode[] => {
+                      const rows: React.ReactNode[] = [];
+                      const hasChildren = col.children && col.children.length > 0;
+                      
+                      rows.push(
+                        <tr key={col.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                          <td className="px-6 py-4">
+                            <div className="flex items-center space-x-3" style={{ paddingLeft: `${level * 24}px` }}>
+                              {hasChildren && (
+                                <span className="text-gray-400 text-xs">└─</span>
+                              )}
+                              {col.coverImage ? (
+                                <img src={col.coverImage} alt={col.name} className="w-10 h-10 rounded-full object-cover" />
+                              ) : (
+                                <div className="w-10 h-10 bg-primary-50 dark:bg-primary-900/20 text-primary-600 rounded-full flex items-center justify-center">
+                                  <Library size={20} />
+                                </div>
+                              )}
+                              <div>
+                                <span className="font-semibold block">{col.name}</span>
+                                {level > 0 && (
+                                  <span className="text-xs text-gray-400">{level}级子专栏</span>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">{col.description || '-'}</td>
+                          <td className="px-6 py-4">
+                            <span className="px-2 py-1 text-xs font-bold rounded-full bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
+                              {col.articleCount || 0} 篇
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-right space-x-2">
+                            <button
+                              onClick={() => openModal('column', col)}
+                              className="p-2 hover:bg-primary-50 dark:hover:bg-primary-900/20 text-primary-600 rounded-lg"
+                            >
+                              <Edit size={16} />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteColumn(col.id)}
+                              className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 rounded-lg"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                      
+                      // 递归渲染子专栏
+                      if (hasChildren) {
+                        col.children.forEach((child: any) => {
+                          rows.push(...renderColumnRow(child, level + 1));
+                        });
+                      }
+                      
+                      return rows;
+                    };
+                    
+                    const allRows: React.ReactNode[] = [];
+                    columns.forEach((col: any) => {
+                      allRows.push(...renderColumnRow(col, 0));
+                    });
+                    
+                    return allRows.length > 0 ? allRows : (
+                      <tr>
+                        <td colSpan={4} className="px-6 py-10 text-center text-gray-500 italic">暂无专栏数据</td>
+                      </tr>
+                    );
+                  })()}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
         {/* Announcement Management */}
         {activeTab === 'announcements' && (
           <div className="space-y-6">
@@ -604,7 +734,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
             <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
               <h3 className="text-xl font-bold">
                 {editingItem ? '编辑' : '新建'}
-                {modalType === 'category' ? '分类' : modalType === 'tag' ? '标签' : modalType === 'user' ? '用户' : '公告'}
+                {modalType === 'category' ? '分类' : modalType === 'tag' ? '标签' : modalType === 'column' ? '专栏' : modalType === 'user' ? '用户' : '公告'}
               </h3>
               <button 
                 onClick={() => setIsModalOpen(false)}
@@ -657,12 +787,70 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
                     />
                   </div>
                 </>
+              ) : modalType === 'column' ? (
+                <>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">专栏名称</label>
+                    <input
+                      type="text"
+                      required
+                      className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">描述</label>
+                    <textarea
+                      className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500 h-24 resize-none"
+                      value={formData.description}
+                      onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">封面图片</label>
+                    <div className="space-y-2">
+                      {formData.coverImage && (
+                        <div className="relative w-full h-32 rounded-xl overflow-hidden">
+                          <img src={formData.coverImage} alt="封面" className="w-full h-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={() => setFormData({...formData, coverImage: ''})}
+                            className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                          >
+                            <Plus size={16} className="rotate-45" />
+                          </button>
+                        </div>
+                      )}
+                      <input
+                        type="text"
+                        placeholder="输入图片URL或上传图片"
+                        className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        value={formData.coverImage}
+                        onChange={(e) => setFormData({...formData, coverImage: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">父专栏</label>
+                    <select
+                      className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      value={formData.parentId}
+                      onChange={(e) => setFormData({...formData, parentId: e.target.value})}
+                    >
+                      <option value="">顶级专栏</option>
+                      {columns.filter(c => !editingItem || c.id !== editingItem.id).map(col => (
+                        <option key={col.id} value={col.id}>{col.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </>
               ) : modalType === 'announcement' ? (
                 <>
                   <div>
                     <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">标题</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       required
                       className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500"
                       value={formData.title}
@@ -765,9 +953,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
               <h3 className="text-xl font-bold mb-2">确认删除？</h3>
               <p className="text-gray-500 dark:text-gray-400 text-sm mb-8">
                 此操作无法撤销，您确定要删除这个{
-                  deleteConfirm.type === 'article' ? '文章' : 
-                  deleteConfirm.type === 'category' ? '分类' : 
-                  deleteConfirm.type === 'tag' ? '标签' : 
+                  deleteConfirm.type === 'article' ? '文章' :
+                  deleteConfirm.type === 'category' ? '分类' :
+                  deleteConfirm.type === 'tag' ? '标签' :
+                  deleteConfirm.type === 'column' ? '专栏' :
                   deleteConfirm.type === 'user' ? '用户' : '公告'
                 }吗？
               </p>

@@ -45,12 +45,14 @@ public class AnnouncementController {
             
             List<Map<String, Object>> result = announcements.stream().map(a -> {
                 Map<String, Object> item = new HashMap<>();
-                try {
-                    BeanUtils.copyProperties(a, item);
-                    item.put("hasRead", readIds.contains(a.getId()));
-                } catch (Exception e) {
-                    System.err.println("ERROR: BeanUtils copy failed for announcement ID " + a.getId());
-                }
+                item.put("id", a.getId());
+                item.put("title", a.getTitle());
+                item.put("content", a.getContent());
+                item.put("type", a.getType());
+                item.put("isActive", a.getIsActive());
+                item.put("createdAt", a.getCreatedAt());
+                item.put("updatedAt", a.getUpdatedAt());
+                item.put("hasRead", readIds.contains(a.getId()));
                 return item;
             }).collect(Collectors.toList());
             return ResponseEntity.ok(result);

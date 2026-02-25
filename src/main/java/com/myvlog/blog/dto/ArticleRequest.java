@@ -25,6 +25,8 @@ public class ArticleRequest {
     private Long categoryId;
     
     private List<Long> tagIds;
+    
+    private List<Long> columnIds;
 
     private ArticleStatus status = ArticleStatus.DRAFT;
 

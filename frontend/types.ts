@@ -27,6 +27,7 @@ export interface Column {
   description?: string;
   parentId?: number;
   articleCount?: number;
+  children?: Column[];
   createdAt?: string;
   updatedAt?: string;
 }
@@ -40,14 +41,22 @@ export interface Article {
   authorId: number;
   authorName: string;
   authorAvatar?: string;
+  author?: {
+    id: number;
+    nickname: string;
+    username: string;
+    avatar: string;
+  };
   categoryId: number;
   categoryName: string;
   category?: { id: number; name: string };
+  columns?: Column[];
   tags: Tag[];
   views: number;
   viewCount?: number;
   createTime: string;
   updateTime: string;
+  updatedAt?: string;
   publishedAt?: string;
   createdAt?: string;
   isPublished: boolean;
@@ -65,7 +74,7 @@ export interface Announcement {
 export interface LearningNote {
   id: number;
   articleId: number;
-  userId: number;
+  userId?: number;
   content: string;
   createdAt?: string;
   updatedAt?: string;
