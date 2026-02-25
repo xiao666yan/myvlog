@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Sun, Moon, Search, User, Menu, X, LayoutDashboard, LogOut, Home, 
-  PenTool, Edit3, Settings, Heart, Code, LogIn, Bell
+  PenTool, Edit3, Settings, Heart, Code, LogIn, Bell, Library
 } from 'lucide-react';
 import { MOCK_USER } from '../constants.tsx';
 import { logout } from '../src/api/auth';
