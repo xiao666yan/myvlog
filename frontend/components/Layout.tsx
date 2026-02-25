@@ -115,6 +115,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onNavigate, curren
   const navItems = [
     { id: 'home', label: '首页', icon: Home },
     { id: 'moments', label: '动态', icon: Heart },
+    { id: 'archive', label: '归档', icon: Library },
     { id: 'search', label: '搜索', icon: Search },
   ];
   
