@@ -21,6 +21,16 @@ export interface Tag {
   name: string;
 }
 
+export interface Column {
+  id: number;
+  name: string;
+  description?: string;
+  parentId?: number;
+  articleCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Article {
   id: number;
   title: string;
@@ -50,6 +60,15 @@ export interface Announcement {
   content: string;
   createTime: string;
   createdAt?: string;
+}
+
+export interface LearningNote {
+  id: number;
+  articleId: number;
+  userId: number;
+  content: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface DashboardStats {
