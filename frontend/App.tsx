@@ -8,6 +8,7 @@ import Profile from './pages/Profile';
 import Search from './pages/Search';
 import AdminDashboard from './pages/AdminDashboard';
 import Moments from './pages/Moments';
+import Archive from './pages/Archive';
 import AuthPage from './pages/AuthPage';
 import { MOCK_ARTICLES } from './constants.tsx';
 import { logout } from './src/api/auth';
@@ -145,6 +146,8 @@ const App: React.FC = () => {
         return <Home onPostClick={handlePostClick} onCategoryClick={handleCategoryClick} onTagClick={handleTagClick} />;
       case 'moments':
         return <Moments onPostClick={handlePostClick} />;
+      case 'archive':
+        return <Archive onPostClick={handlePostClick} />;
       case 'detail':
         return <PostDetail articleId={selectedArticleId!} onBack={() => navigateTo('home')} />;
       case 'search':
