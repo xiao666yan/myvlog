@@ -1,0 +1,2 @@
+
+d8d7f6491e2d7b0940ee39b459232cbc4b764779	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/rgbcolor","integrity":null,"time":1772361934528,"size":"262","metadata":{"time":1772361934528,"url":"http://registry.npm.taobao.org/rgbcolor","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sun, 01 Mar 2026 10:45:34 GMT","location":"https://registry.npmmirror.com/rgbcolor"},"options":{"compress":true},"status":301}}

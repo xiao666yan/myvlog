@@ -1,0 +1,2 @@
+
+29deeead62ea1c33a071bc6d84b9b60bccca3f38	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/canvg","integrity":null,"time":1772361934029,"size":"262","metadata":{"time":1772361934029,"url":"http://registry.npm.taobao.org/canvg","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sun, 01 Mar 2026 10:45:33 GMT","location":"https://registry.npmmirror.com/canvg"},"options":{"compress":true},"status":301}}

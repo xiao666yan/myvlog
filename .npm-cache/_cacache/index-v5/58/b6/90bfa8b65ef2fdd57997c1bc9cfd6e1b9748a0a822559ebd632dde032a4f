@@ -1,0 +1,2 @@
+
+c262b000f9d5970739416bfe2a92546af23258b0	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/base64-arraybuffer","integrity":null,"time":1772361934428,"size":"262","metadata":{"time":1772361934428,"url":"http://registry.npm.taobao.org/base64-arraybuffer","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sun, 01 Mar 2026 10:45:34 GMT","location":"https://registry.npmmirror.com/base64-arraybuffer"},"options":{"compress":true},"status":301}}

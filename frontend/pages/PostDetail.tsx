@@ -1,11 +1,19 @@
 
-import React, { useState, useEffect } from 'react';
-import { 
-  ArrowLeft, Calendar, Eye, Share2, BookOpen, Link2, Check, X, Twitter
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  ArrowLeft, Calendar, Eye, Share2, BookOpen, Link2, Check, X, Twitter, FileDown, List
 } from 'lucide-react';
 import { Article } from '../types';
 import { getArticleById } from '../src/api/article';
 import { useToast } from '../context/ToastContext';
+import { exportArticleToPDFSimple } from '../src/utils/pdfExport';
+
+// 目录项接口
+interface TocItem {
+  id: string;
+  text: string;
+  level: number;
+}
 
 const formatDate = (dateStr: string | undefined): string => {
   if (!dateStr) return '未知日期';
@@ -24,7 +32,43 @@ const PostDetail: React.FC<PostDetailProps> = ({ articleId, onBack }) => {
   const [loading, setLoading] = useState(true);
   const [showShareModal, setShowShareModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [toc, setToc] = useState<TocItem[]>([]);
+  const [activeTocId, setActiveTocId] = useState<string>('');
+  const [showToc, setShowToc] = useState(true);
+  const contentRef = useRef<HTMLDivElement>(null);
   const { showToast } = useToast();
+
+  // 解析内容生成目录
+  const generateToc = (content: string): TocItem[] => {
+    if (!content) return [];
+    
+    const items: TocItem[] = [];
+    // 匹配 markdown 标题: ## 标题 或 ### 标题
+    const headingRegex = /^(#{2,4})\s+(.+)$/gm;
+    let match;
+    
+    while ((match = headingRegex.exec(content)) !== null) {
+      const level = match[1].length; // ## = 2, ### = 3, #### = 4
+      const text = match[2].trim();
+      // 生成唯一ID
+      const id = `heading-${items.length}`;
+      items.push({ id, text, level });
+    }
+    
+    return items;
+  };
+
+  // 处理内容，为标题添加ID
+  const processContent = (content: string, tocItems: TocItem[]): string => {
+    if (!content || tocItems.length === 0) return content;
+    
+    let index = 0;
+    return content.replace(/^(#{2,4})\s+(.+)$/gm, (match, hashes, text) => {
+      const id = tocItems[index]?.id || `heading-${index}`;
+      index++;
+      return `<h${hashes.length} id="${id}" class="scroll-mt-20">${text.trim()}</h${hashes.length}>`;
+    });
+  };
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -32,6 +76,11 @@ const PostDetail: React.FC<PostDetailProps> = ({ articleId, onBack }) => {
         setLoading(true);
         const res = await getArticleById(articleId);
         setArticle(res);
+        
+        // 生成目录
+        const content = res.content || res.contentHtml || '';
+        const tocItems = generateToc(content);
+        setToc(tocItems);
       } catch (error) {
         console.error('Failed to fetch article:', error);
       } finally {
@@ -40,6 +89,40 @@ const PostDetail: React.FC<PostDetailProps> = ({ articleId, onBack }) => {
     };
     fetchArticle();
   }, [articleId]);
+
+  // 监听滚动，高亮当前目录项
+  useEffect(() => {
+    if (toc.length === 0) return;
+    
+    const handleScroll = () => {
+      const headings = toc.map(item => document.getElementById(item.id)).filter(Boolean);
+      
+      for (let i = headings.length - 1; i >= 0; i--) {
+        const heading = headings[i];
+        if (heading) {
+          const rect = heading.getBoundingClientRect();
+          if (rect.top <= 100) {
+            setActiveTocId(toc[i].id);
+            break;
+          }
+        }
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // 初始化
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [toc]);
+
+  // 点击目录跳转
+  const handleTocClick = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveTocId(id);
+    }
+  };
 
   const getShareUrl = () => {
     return window.location.href;
@@ -60,6 +143,24 @@ const PostDetail: React.FC<PostDetailProps> = ({ articleId, onBack }) => {
     const text = encodeURIComponent(`推荐阅读：${article?.title}`);
     const url = encodeURIComponent(getShareUrl());
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+  };
+
+  const handleExportPDF = () => {
+    if (!article) return;
+    
+    try {
+      exportArticleToPDFSimple({
+        title: article.title,
+        content: article.content || article.contentHtml || '',
+        author: article.author,
+        publishedAt: article.publishedAt,
+        createTime: article.createTime,
+        category: article.category
+      });
+      showToast('PDF导出成功', 'success');
+    } catch (error) {
+      showToast('PDF导出失败', 'error');
+    }
   };
 
   const handleShareToWeibo = () => {
@@ -137,8 +238,8 @@ const PostDetail: React.FC<PostDetailProps> = ({ articleId, onBack }) => {
         </h1>
         <div className="flex items-center justify-center space-x-6 text-sm text-gray-500 border-y border-gray-100 dark:border-gray-800 py-4">
           <div className="flex items-center">
-            <img src={article.authorAvatar || "https://picsum.photos/seed/user/200"} className="w-6 h-6 rounded-full mr-2" />
-            <span className="font-medium text-gray-900 dark:text-gray-200">{article.authorName || '匿名作者'}</span>
+            <img src={article.author?.avatar || "https://picsum.photos/seed/user/200"} className="w-6 h-6 rounded-full mr-2" />
+            <span className="font-medium text-gray-900 dark:text-gray-200">{article.author?.nickname || article.author?.username || '匿名作者'}</span>
           </div>
           <span className="flex items-center"><Eye size={16} className="mr-1" /> {viewCount} 阅读</span>
           <span className="flex items-center"><BookOpen size={16} className="mr-1" /> {readingTime} 分钟阅读</span>
@@ -154,12 +255,69 @@ const PostDetail: React.FC<PostDetailProps> = ({ articleId, onBack }) => {
         />
       </div>
 
-      {/* Content */}
-      <article className="prose prose-lg dark:prose-invert max-w-none mb-16">
-        <div className="text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap">
-          {article.content || "暂无内容。"}
-        </div>
-      </article>
+      {/* Main Content with TOC */}
+      <div className="flex gap-8">
+        {/* Table of Contents - Sticky Sidebar */}
+        {toc.length > 0 && (
+          <aside className={`hidden lg:block ${showToc ? 'w-64' : 'w-0'} transition-all duration-300`}>
+            <div className="sticky top-24 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-4 shadow-sm">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-gray-900 dark:text-white flex items-center">
+                  <List className="w-4 h-4 mr-2" />
+                  目录
+                </h3>
+                <button
+                  onClick={() => setShowToc(false)}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+              <nav className="space-y-1 max-h-[calc(100vh-200px)] overflow-y-auto">
+                {toc.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => handleTocClick(item.id)}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${
+                      activeTocId === item.id
+                        ? 'bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400 font-medium'
+                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+                    }`}
+                    style={{ paddingLeft: `${(item.level - 2) * 12 + 12}px` }}
+                  >
+                    {item.text}
+                  </button>
+                ))}
+              </nav>
+            </div>
+          </aside>
+        )}
+
+        {/* Content */}
+        <article className={`flex-1 ${toc.length > 0 && !showToc ? 'lg:ml-0' : ''}`}>
+          {/* Show TOC toggle button when TOC is hidden */}
+          {toc.length > 0 && !showToc && (
+            <button
+              onClick={() => setShowToc(true)}
+              className="hidden lg:flex items-center mb-6 text-gray-500 hover:text-primary-600 transition-colors"
+            >
+              <List className="w-4 h-4 mr-2" />
+              显示目录
+            </button>
+          )}
+          
+          <div 
+            ref={contentRef}
+            className="prose prose-lg dark:prose-invert max-w-none mb-16 text-gray-800 dark:text-gray-200 leading-relaxed"
+            dangerouslySetInnerHTML={{
+              __html: processContent(
+                article.content || article.contentHtml || '暂无内容。',
+                toc
+              ).replace(/\n/g, '<br/>')
+            }}
+          />
+        </article>
+      </div>
 
       {/* Tags & Footer */}
       <div className="flex flex-wrap gap-2 mb-10 pb-10 border-b border-gray-100 dark:border-gray-800">
@@ -215,7 +373,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ articleId, onBack }) => {
                   <span className="text-sm text-gray-600 dark:text-gray-400">微博</span>
                 </button>
                 
-                <button 
+                <button
                   onClick={handleCopyLink}
                   className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
@@ -223,6 +381,16 @@ const PostDetail: React.FC<PostDetailProps> = ({ articleId, onBack }) => {
                     {copied ? <Check size={24} className="text-green-500" /> : <Link2 size={24} />}
                   </div>
                   <span className="text-sm text-gray-600 dark:text-gray-400">{copied ? '已复制' : '复制链接'}</span>
+                </button>
+
+                <button
+                  onClick={handleExportPDF}
+                  className="flex flex-col items-center gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
+                  <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white">
+                    <FileDown size={24} />
+                  </div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">导出PDF</span>
                 </button>
               </div>
               

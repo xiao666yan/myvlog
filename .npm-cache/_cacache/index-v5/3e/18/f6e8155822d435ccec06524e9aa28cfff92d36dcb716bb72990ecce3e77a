@@ -1,0 +1,2 @@
+
+5a86e7230617f9921a7bf36026c742d9eb4bfdef	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/performance-now","integrity":null,"time":1772361934912,"size":"262","metadata":{"time":1772361934912,"url":"http://registry.npm.taobao.org/performance-now","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sun, 01 Mar 2026 10:45:34 GMT","location":"https://registry.npmmirror.com/performance-now"},"options":{"compress":true},"status":301}}

@@ -77,18 +77,20 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
         setCategories(fetchedCategories);
         setTags(fetchedTags);
         setColumns(fetchedColumns);
-        
-        // 只在新建文章且未选择分类时，自动选择第一个分类
-        if (!initialArticle && fetchedCategories.length > 0 && category === null) {
-          setCategory(fetchedCategories[0].id);
-        }
-        // 编辑文章时，保持原有分类不变
       } catch (error) {
         console.error('Failed to fetch metadata:', error);
       }
     };
     fetchMetadata();
   }, []);
+
+  // 单独处理新建文章的默认分类选择
+  useEffect(() => {
+    // 只在新建文章、分类列表已加载、且当前没有分类时，选择第一个分类
+    if (!initialArticle && categories.length > 0 && category === null) {
+      setCategory(categories[0].id);
+    }
+  }, [initialArticle, categories, category]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

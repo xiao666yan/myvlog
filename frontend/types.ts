@@ -37,6 +37,7 @@ export interface Article {
   title: string;
   summary: string;
   content: string;
+  contentHtml?: string;
   coverImage: string;
   authorId: number;
   authorName: string;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   BarChart3, FileText, FolderTree, Tag, Users, Bell, 
   Settings, MoreVertical, Edit, Trash2, Plus, 
-  TrendingUp, TrendingDown, Clock, Library
+  TrendingUp, TrendingDown, Clock, Library, CalendarDays
 } from 'lucide-react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, 
@@ -17,6 +17,7 @@ import { getUsers, updateUserProfile, deleteUser } from '../src/api/user';
 import { getAnnouncements, createAnnouncement, updateAnnouncement, deleteAnnouncement } from '../src/api/announcement';
 import { getColumns, getColumnTree, createColumn, updateColumn, deleteColumn } from '../src/api/column';
 import { useToast } from '../context/ToastContext';
+import AdminSchedule from './AdminSchedule';
 
 const formatDate = (dateStr: string | undefined): string => {
   if (!dateStr) return '未知';
@@ -114,7 +115,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
         setTags(tags.filter(t => t.id !== id));
       } else if (type === 'column') {
         await deleteColumn(id);
-        setColumns(columns.filter(c => c.id !== id));
+        // 删除后重新获取专栏树数据
+        const res = await getColumnTree();
+        setColumns(Array.isArray(res) ? res : ((res as any).data || (res as any).records || res || []));
       } else if (type === 'user') {
         await deleteUser(id);
         setUsers(users.filter(u => u.id !== id));
@@ -204,7 +207,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
           await createColumn(submitData);
           showToast('创建成功', 'success');
         }
-        fetchData();
+        // 直接刷新专栏数据
+        const res = await getColumnTree();
+        setColumns(Array.isArray(res) ? res : ((res as any).data || (res as any).records || res || []));
       } else if (modalType === 'user') {
         if (editingItem) {
           await updateUserProfile(editingItem.id, formData);
@@ -231,6 +236,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
 
   const menuItems = [
     { id: 'data', label: '概览', icon: BarChart3 },
+    { id: 'schedule', label: '日程', icon: CalendarDays },
     { id: 'articles', label: '文章', icon: FileText },
     { id: 'categories', label: '分类', icon: FolderTree },
     { id: 'tags', label: '标签', icon: Tag },
@@ -717,8 +723,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
           </div>
         )}
 
+        {/* Schedule */}
+        {activeTab === 'schedule' && <AdminSchedule />}
+
         {/* Other Tabs Placeholder */}
-        {activeTab !== 'data' && activeTab !== 'articles' && activeTab !== 'categories' && activeTab !== 'users' && activeTab !== 'tags' && (
+        {activeTab !== 'data' && activeTab !== 'articles' && activeTab !== 'categories' && activeTab !== 'users' && activeTab !== 'tags' && activeTab !== 'schedule' && (
           <div className="flex flex-col items-center justify-center py-20 text-gray-400">
             <Settings size={64} className="mb-4 animate-spin-slow opacity-20" />
             <h3 className="text-xl font-bold">管理 {activeTab}</h3>

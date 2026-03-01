@@ -1,0 +1,2 @@
+
+4e2fb55099b4e210e5cca74fda7a8e74841a7b1d	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/html2canvas","integrity":null,"time":1772361933896,"size":"262","metadata":{"time":1772361933896,"url":"http://registry.npm.taobao.org/html2canvas","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sun, 01 Mar 2026 10:45:33 GMT","location":"https://registry.npmmirror.com/html2canvas"},"options":{"compress":true},"status":301}}

@@ -1,0 +1,2 @@
+
+2b45b77cce9225fda14b823c9ad8d17a4c5b81ac	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/stackblur-canvas","integrity":null,"time":1772361934531,"size":"262","metadata":{"time":1772361934531,"url":"http://registry.npm.taobao.org/stackblur-canvas","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sun, 01 Mar 2026 10:45:34 GMT","location":"https://registry.npmmirror.com/stackblur-canvas"},"options":{"compress":true},"status":301}}

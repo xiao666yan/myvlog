@@ -1,0 +1,2 @@
+
+0de7cb3cef2c2ca8ce90d4233be18946a6ad3b09	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/jspdf","integrity":null,"time":1772361933746,"size":"262","metadata":{"time":1772361933746,"url":"http://registry.npm.taobao.org/jspdf","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sun, 01 Mar 2026 10:45:33 GMT","location":"https://registry.npmmirror.com/jspdf"},"options":{"compress":true},"status":301}}

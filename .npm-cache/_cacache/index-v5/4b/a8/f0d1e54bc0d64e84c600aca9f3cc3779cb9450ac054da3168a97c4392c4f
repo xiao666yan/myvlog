@@ -1,0 +1,2 @@
+
+fe16e9bc62be494a51251b4cde86694408749259	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/text-segmentation","integrity":null,"time":1772361934029,"size":"262","metadata":{"time":1772361934029,"url":"http://registry.npm.taobao.org/text-segmentation","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sun, 01 Mar 2026 10:45:33 GMT","location":"https://registry.npmmirror.com/text-segmentation"},"options":{"compress":true},"status":301}}

@@ -1,0 +1,2 @@
+
+6c177654ee224e8da54b99b47c048a92801e4581	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/svg-pathdata","integrity":null,"time":1772361934527,"size":"262","metadata":{"time":1772361934527,"url":"http://registry.npm.taobao.org/svg-pathdata","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sun, 01 Mar 2026 10:45:34 GMT","location":"https://registry.npmmirror.com/svg-pathdata"},"options":{"compress":true},"status":301}}

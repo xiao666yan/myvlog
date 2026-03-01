@@ -290,13 +290,14 @@ const Archive: React.FC<ArchiveProps> = ({ onPostClick }) => {
                 e.stopPropagation();
                 toggleArticleExpand(col.id.toString(), e);
               }}
-              className={`text-[10px] px-1.5 py-0.5 rounded-full transition-colors ${
+              className={`p-1 rounded-lg transition-colors ${
                 isSelected
-                  ? 'bg-primary-700 hover:bg-primary-800'
-                  : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'
+                  ? 'bg-primary-700 hover:bg-primary-800 text-white'
+                  : 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30'
               }`}
+              title={`${col.articleCount} 篇文章`}
             >
-              {col.articleCount}
+              <FileText size={14} />
             </button>
           )}
         </div>
@@ -368,7 +369,7 @@ const Archive: React.FC<ArchiveProps> = ({ onPostClick }) => {
       <div
         ref={sidebarRef}
         style={{ width: typeof window !== 'undefined' && window.innerWidth >= 768 ? sidebarWidth : 280 }}
-        className={`fixed md:relative top-0 bottom-0 left-0 z-40 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-transform duration-300 ease-in-out ${
+        className={`fixed md:relative top-0 bottom-0 left-0 z-[60] bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-transform duration-300 ease-in-out ${
           isSidebarOpenMobile ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
@@ -401,7 +402,7 @@ const Archive: React.FC<ArchiveProps> = ({ onPostClick }) => {
                   {columns.find(c => c.id.toString() === selectedColumnId)?.name}
                 </h1>
                 <p className="text-gray-500 dark:text-gray-400 text-sm">
-                  {columns.find(c => c.id.toString() === selectedColumnId)?.articleCount || 0} 篇文章
+                  {articles.length} 篇文章
                 </p>
               </div>
 
@@ -412,35 +413,44 @@ const Archive: React.FC<ArchiveProps> = ({ onPostClick }) => {
                       <div
                         key={article.id}
                         onClick={() => handleArticleClick(article)}
-                        className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group"
+                        className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group overflow-hidden"
                       >
-                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                          <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-2">
+                        {/* Cover Image */}
+                        <div className="h-40 overflow-hidden bg-gray-100 dark:bg-gray-700">
+                          <img
+                            src={article.coverImage || `https://picsum.photos/seed/article${article.id}/400/200`}
+                            alt={article.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = `https://picsum.photos/seed/article${article.id}/400/200`;
+                            }}
+                          />
+                        </div>
+                        <div className="p-6">
+                          <div className="flex flex-col gap-3">
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2">
                               {article.title}
                             </h3>
-                            <p className="text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
+                            <p className="text-gray-600 dark:text-gray-400 line-clamp-2 text-sm">
                               {article.summary || '暂无摘要'}
                             </p>
-                            {article.columns && article.columns.length > 0 && (
-                              <div className="flex flex-wrap gap-2 mb-3">
-                                {article.columns.map(col => (
-                                  <span key={col.id} className="inline-flex items-center gap-1 px-2.5 py-1 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 text-xs font-medium rounded-full">
-                                    <BookOpen size={12} />
-                                    {col.name}
+                            <div className="flex items-center justify-between mt-2">
+                              <div className="flex items-center gap-2">
+                                {article.columns && article.columns.length > 0 && (
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 text-xs font-medium rounded-full">
+                                    <BookOpen size={10} />
+                                    {article.columns[0].name}
                                   </span>
-                                ))}
+                                )}
+                                <span className="text-xs text-gray-400 dark:text-gray-500 flex items-center">
+                                  <Clock size={12} className="mr-1" />
+                                  {formatDate(article.publishedAt || article.createdAt)}
+                                </span>
                               </div>
-                            )}
-                          </div>
-                          <div className="flex flex-col items-end md:items-center md:justify-between gap-3 shrink-0">
-                            <span className="text-xs text-gray-400 dark:text-gray-500 flex items-center whitespace-nowrap">
-                              <Clock size={14} className="mr-1.5" />
-                              {formatDate(article.publishedAt || article.createdAt)}
-                            </span>
-                            <div className="flex items-center text-sm font-semibold text-primary-600 dark:text-primary-400 group-hover:translate-x-1 transition-transform">
-                              阅读预览
-                              <ChevronRight size={16} className="ml-1.5" />
+                              <div className="flex items-center text-sm font-semibold text-primary-600 dark:text-primary-400 group-hover:translate-x-1 transition-transform">
+                                阅读
+                                <ChevronRight size={16} className="ml-1" />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -478,6 +488,18 @@ const Archive: React.FC<ArchiveProps> = ({ onPostClick }) => {
                           <div className="flex-1 overflow-y-auto p-10 md:p-14 lg:p-16">
                             {/* Article Header */}
                             <div className="mb-8">
+                              {/* Cover Image */}
+                              <div className="mb-6 rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-700">
+                                <img
+                                  src={selectedArticle.coverImage || `https://picsum.photos/seed/article${selectedArticle.id}/800/400`}
+                                  alt={selectedArticle.title}
+                                  className="w-full h-48 md:h-64 object-cover"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = `https://picsum.photos/seed/article${selectedArticle.id}/800/400`;
+                                  }}
+                                />
+                              </div>
+
                               <div className="flex items-center gap-4 mb-6">
                                 {selectedArticle.columns && selectedArticle.columns.length > 0 && (
                                   <span className="px-4 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-full text-sm font-bold uppercase tracking-wider">
@@ -489,7 +511,7 @@ const Archive: React.FC<ArchiveProps> = ({ onPostClick }) => {
                                   预计阅读 8 分钟
                                 </span>
                               </div>
-                              
+
                               <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight">
                                 {selectedArticle.title}
                               </h1>
