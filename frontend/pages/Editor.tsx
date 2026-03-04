@@ -37,8 +37,12 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
   const [historyIndex, setHistoryIndex] = useState(0);
   const [uploading, setUploading] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const editorContainerRef = useRef<HTMLDivElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const { showToast } = useToast();
+  const isScrolling = useRef(false);
 
   useEffect(() => {
     if (initialArticle) {
@@ -91,6 +95,45 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
       setCategory(categories[0].id);
     }
   }, [initialArticle, categories, category]);
+
+  // 滚动同步功能
+  useEffect(() => {
+    if (viewMode !== 'split') return;
+
+    const editorContainer = editorContainerRef.current;
+    const preview = previewRef.current;
+    if (!editorContainer || !preview) return;
+
+    const syncScroll = (source: HTMLElement, target: HTMLElement) => {
+      if (isScrolling.current) return;
+      isScrolling.current = true;
+
+      const sourceScrollRatio = source.scrollTop / (source.scrollHeight - source.clientHeight || 1);
+      const targetScrollTop = sourceScrollRatio * (target.scrollHeight - target.clientHeight || 1);
+      
+      target.scrollTop = targetScrollTop;
+
+      setTimeout(() => {
+        isScrolling.current = false;
+      }, 50);
+    };
+
+    const handleEditorScroll = () => {
+      syncScroll(editorContainer, preview);
+    };
+
+    const handlePreviewScroll = () => {
+      syncScroll(preview, editorContainer);
+    };
+
+    editorContainer.addEventListener('scroll', handleEditorScroll);
+    preview.addEventListener('scroll', handlePreviewScroll);
+
+    return () => {
+      editorContainer.removeEventListener('scroll', handleEditorScroll);
+      preview.removeEventListener('scroll', handlePreviewScroll);
+    };
+  }, [viewMode]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -163,35 +206,45 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
     );
   };
 
-  const insertMarkdown = (prefix: string, suffix: string = prefix, wrapLine: boolean = false) => {
+  const insertMarkdown = (prefix: string, suffix: string = prefix, wrapLine: boolean = false, needBlankLine: boolean = false) => {
     const textarea = textareaRef.current;
     if (!textarea) return;
-    
+
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const selectedText = content.substring(start, end);
-    
+
     let newContent: string;
     let newCursorStart: number;
     let newCursorEnd: number;
-    
+
     if (wrapLine) {
       const lineStart = content.lastIndexOf('\n', start - 1) + 1;
       const lineEnd = content.indexOf('\n', end);
       const actualLineEnd = lineEnd === -1 ? content.length : lineEnd;
       const lineContent = content.substring(lineStart, actualLineEnd);
-      newContent = content.substring(0, lineStart) + prefix + lineContent + suffix + content.substring(actualLineEnd);
-      newCursorStart = lineStart + prefix.length;
+
+      // 检查是否需要在前面添加空行
+      let blankLinePrefix = '';
+      if (needBlankLine && lineStart > 0) {
+        const charBeforeLine = content.substring(lineStart - 1, lineStart);
+        if (charBeforeLine !== '\n') {
+          blankLinePrefix = '\n';
+        }
+      }
+
+      newContent = content.substring(0, lineStart) + blankLinePrefix + prefix + lineContent + suffix + content.substring(actualLineEnd);
+      newCursorStart = lineStart + blankLinePrefix.length + prefix.length;
       newCursorEnd = newCursorStart + lineContent.length;
     } else {
       newContent = content.substring(0, start) + prefix + selectedText + suffix + content.substring(end);
       newCursorStart = start + prefix.length;
       newCursorEnd = newCursorStart + selectedText.length;
     }
-    
+
     setContent(newContent);
     pushToHistory(newContent);
-    
+
     setTimeout(() => {
       textarea.focus();
       textarea.setSelectionRange(newCursorStart, newCursorEnd);
@@ -221,10 +274,62 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
   };
 
   const insertImage = () => {
-    const url = prompt('请输入图片URL:');
-    if (url) {
-      const alt = prompt('请输入图片描述（可选）:') || '';
-      insertMarkdown(`![${alt}](${url}`, ')');
+    // 触发文件选择
+    imageInputRef.current?.click();
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    await uploadAndInsertImage(file);
+  };
+
+  const uploadAndInsertImage = async (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      showToast('请选择图片文件', 'error');
+      return;
+    }
+    
+    if (file.size > 15 * 1024 * 1024) {
+      showToast('图片大小不能超过 15MB', 'error');
+      return;
+    }
+    
+    setUploading(true);
+    try {
+      const res = await uploadFile(file);
+      const imageUrl = typeof res === 'string' ? res : (res as any).url;
+      const alt = file.name.replace(/\.[^/.]+$/, '');
+      insertMarkdown(`![${alt}](${imageUrl})`, '');
+      showToast('图片上传成功', 'success');
+    } catch (error) {
+      console.error('Upload failed:', error);
+      showToast('图片上传失败，请重试', 'error');
+    } finally {
+      setUploading(false);
+      // 重置文件输入
+      if (imageInputRef.current) {
+        imageInputRef.current.value = '';
+      }
+    }
+  };
+
+  // 处理粘贴事件
+  const handlePaste = async (e: React.ClipboardEvent) => {
+    const items = e.clipboardData.items;
+    
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      
+      // 检查是否是图片
+      if (item.type.startsWith('image/')) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (file) {
+          await uploadAndInsertImage(file);
+        }
+        return;
+      }
     }
   };
 
@@ -309,9 +414,9 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
     {
       title: '标题',
       buttons: [
-        { icon: Heading1, title: '一级标题', action: () => insertMarkdown('# ', '', true) },
-        { icon: Heading2, title: '二级标题', action: () => insertMarkdown('## ', '', true) },
-        { icon: Heading3, title: '三级标题', action: () => insertMarkdown('### ', '', true) },
+        { icon: Heading1, title: '一级标题', action: () => insertMarkdown('# ', '', true, true) },
+        { icon: Heading2, title: '二级标题', action: () => insertMarkdown('## ', '', true, true) },
+        { icon: Heading3, title: '三级标题', action: () => insertMarkdown('### ', '', true, true) },
       ]
     },
     {
@@ -335,15 +440,15 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
     {
       title: '列表',
       buttons: [
-        { icon: List, title: '无序列表', action: () => insertMarkdown('- ', '', true) },
-        { icon: ListOrdered, title: '有序列表', action: () => insertMarkdown('1. ', '', true) },
-        { icon: CheckSquare, title: '任务列表', action: () => insertMarkdown('- [ ] ', '', true) },
+        { icon: List, title: '无序列表', action: () => insertMarkdown('- ', '', true, true) },
+        { icon: ListOrdered, title: '有序列表', action: () => insertMarkdown('1. ', '', true, true) },
+        { icon: CheckSquare, title: '任务列表', action: () => insertMarkdown('- [ ] ', '', true, true) },
       ]
     },
     {
       title: '插入',
       buttons: [
-        { icon: Quote, title: '引用', action: () => insertMarkdown('> ', '', true) },
+        { icon: Quote, title: '引用', action: () => insertMarkdown('> ', '', true, true) },
         { icon: Link, title: '链接 (Ctrl+K)', action: insertLink },
         { icon: Image, title: '图片', action: insertImage },
         { icon: Table, title: '表格', action: () => insertBlock('| 列1 | 列2 | 列3 |\n|-----|-----|-----|\n| 内容 | 内容 | 内容 |') },
@@ -437,17 +542,18 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
             
             <div className={`flex ${viewMode === 'split' ? 'flex-row' : 'flex-col'}`}>
               {viewMode !== 'preview' && (
-                <div className={`${viewMode === 'split' ? 'w-1/2 border-r border-gray-100 dark:border-gray-800' : 'w-full'}`}>
-                  <textarea 
+                <div ref={editorContainerRef} className={`${viewMode === 'split' ? 'w-1/2 border-r border-gray-100 dark:border-gray-800' : 'w-full'} h-[600px] overflow-auto`}>
+                  <textarea
                     ref={textareaRef}
                     name="markdown-editor"
-                    placeholder="使用 Markdown 编写您的文章..."
-                    className="w-full px-6 py-6 min-h-[500px] bg-transparent resize-none focus:outline-none leading-relaxed text-lg font-mono"
+                    placeholder="使用 Markdown 编写您的文章...&#10;支持直接粘贴图片或点击工具栏插入图片"
+                    className="w-full px-6 py-6 min-h-full bg-transparent resize-none focus:outline-none leading-relaxed text-lg font-mono"
                     value={content}
                     onChange={(e) => {
                       setContent(e.target.value);
                     }}
                     onBlur={() => pushToHistory(content)}
+                    onPaste={handlePaste}
                   />
                   <div className="px-6 py-2 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 flex items-center justify-between text-xs text-gray-500">
                     <div className="flex items-center gap-4">
@@ -464,8 +570,8 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
               )}
               
               {viewMode !== 'edit' && (
-                <div className={`${viewMode === 'split' ? 'w-1/2' : 'w-full'} overflow-auto`}>
-                  <div className="px-6 py-6 min-h-[500px] prose dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-a:text-primary-600 prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-blockquote:border-l-primary-500 prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-gray-800/50 prose-blockquote:py-1 prose-blockquote:rounded-r-lg prose-table:overflow-hidden prose-th:bg-gray-100 dark:prose-th:bg-gray-800">
+                <div ref={previewRef} className={`${viewMode === 'split' ? 'w-1/2' : 'w-full'} h-[600px] overflow-auto`}>
+                  <div className="px-6 py-6 min-h-full prose dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-a:text-primary-600 prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-blockquote:border-l-primary-500 prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-gray-800/50 prose-blockquote:py-1 prose-blockquote:rounded-r-lg prose-table:overflow-hidden prose-th:bg-gray-100 dark:prose-th:bg-gray-800">
                     {content ? (
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>
                         {content}
@@ -484,11 +590,19 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
           <div className="space-y-6">
             <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6">
               <h3 className="font-bold mb-4 flex items-center"><ImageIcon size={18} className="mr-2" /> 封面图片</h3>
-              <input 
+              <input
                 ref={fileInputRef}
-                type="file" 
+                type="file"
                 accept="image/*"
                 onChange={handleCoverUpload}
+                className="hidden"
+              />
+              {/* 文章图片上传 input */}
+              <input
+                ref={imageInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
                 className="hidden"
               />
               {coverImage ? (

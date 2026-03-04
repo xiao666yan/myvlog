@@ -573,11 +573,11 @@ const Archive: React.FC<ArchiveProps> = ({ onPostClick }) => {
                         </div>
                       </div>
                       
-                      {/* Sidebar - Notes column (1/4) */}
+                      {/* Sidebar - Notes column (1/3) */}
                       <div className="xl:col-span-1 flex flex-col overflow-hidden">
                         {/* Notes Card */}
                         <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden flex-1 flex flex-col">
-                          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+                          <div className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-gray-700">
                             <div className="flex items-center gap-3">
                               <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
                                 <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -593,13 +593,13 @@ const Archive: React.FC<ArchiveProps> = ({ onPostClick }) => {
                               {notes.length} 条
                             </span>
                           </div>
-                          
-                          <div className="p-6">
+
+                          <div className="p-5 flex-1 flex flex-col">
                             <textarea
                               value={newNoteText}
                               onChange={(e) => setNewNoteText(e.target.value)}
                               placeholder="在此记录你的学习心得..."
-                              className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-900/50 border-2 border-transparent focus:border-blue-500 rounded-xl text-base text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none resize-none min-h-[120px] transition-all"
+                              className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-900/50 border-2 border-transparent focus:border-blue-500 rounded-xl text-base text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none resize-none min-h-[160px] transition-all"
                             />
                             <button
                               onClick={handleAddNote}
