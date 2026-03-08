@@ -1,0 +1,2 @@
+
+8958b9f3ceb39d74f840dbb60f7f6fe97b487559	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/refractor","integrity":null,"time":1772963249288,"size":"262","metadata":{"time":1772963249287,"url":"http://registry.npm.taobao.org/refractor","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sun, 08 Mar 2026 09:47:29 GMT","location":"https://registry.npmmirror.com/refractor"},"options":{"compress":true},"status":301}}

@@ -5,6 +5,7 @@ import { MOCK_USER } from '../constants.tsx';
 import { getArticles } from '../src/api/article';
 import { getCategories } from '../src/api/category';
 import { useToast } from '../context/ToastContext';
+import MarkdownRenderer from '../components/MarkdownRenderer';
 
 interface MomentsProps {
   onPostClick: (id: number) => void;
@@ -136,9 +137,9 @@ const Moments: React.FC<MomentsProps> = ({ onPostClick }) => {
                   <h4 className="font-bold text-xl mb-3 cursor-pointer hover:text-primary-600 transition-colors" onClick={() => onPostClick(post.id)}>
                     {post.title}
                   </h4>
-                  <p className="text-gray-800 dark:text-gray-200 leading-relaxed cursor-pointer text-base line-clamp-4" onClick={() => onPostClick(post.id)}>
-                    {post.summary}
-                  </p>
+                  <div className="text-gray-800 dark:text-gray-200 leading-relaxed cursor-pointer text-base line-clamp-4" onClick={() => onPostClick(post.id)}>
+                    <MarkdownRenderer content={post.summary || '暂无内容'} className="prose-sm" />
+                  </div>
                 </div>
 
                 {/* Main Image */}

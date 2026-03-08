@@ -1,0 +1,2 @@
+
+e2323ae65cfd1664a7e22a7ae7be64f1313c81e1	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/highlightjs-vue","integrity":null,"time":1772963249273,"size":"262","metadata":{"time":1772963249273,"url":"http://registry.npm.taobao.org/highlightjs-vue","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sun, 08 Mar 2026 09:47:29 GMT","location":"https://registry.npmmirror.com/highlightjs-vue"},"options":{"compress":true},"status":301}}

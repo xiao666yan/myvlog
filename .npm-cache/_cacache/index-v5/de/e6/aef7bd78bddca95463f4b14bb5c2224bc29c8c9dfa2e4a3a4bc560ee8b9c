@@ -1,0 +1,2 @@
+
+5b72fa16287e278368cc82fbae637901b167b9ba	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/lowlight","integrity":null,"time":1772963249286,"size":"262","metadata":{"time":1772963249286,"url":"http://registry.npm.taobao.org/lowlight","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sun, 08 Mar 2026 09:47:29 GMT","location":"https://registry.npmmirror.com/lowlight"},"options":{"compress":true},"status":301}}

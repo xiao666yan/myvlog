@@ -7,6 +7,7 @@ import { Article } from '../types';
 import { getArticleById } from '../src/api/article';
 import { useToast } from '../context/ToastContext';
 import { exportArticleToPDFSimple } from '../src/utils/pdfExport';
+import MarkdownRenderer from '../components/MarkdownRenderer';
 
 // 目录项接口
 interface TocItem {
@@ -20,6 +21,22 @@ const formatDate = (dateStr: string | undefined): string => {
   const date = new Date(dateStr);
   if (isNaN(date.getTime())) return '未知日期';
   return date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+};
+
+// 简单的 slug 生成函数，用于目录跳转
+const generateSlug = (text: string) => {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\u4e00-\u9fa5]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'heading';
+};
+
+const getNodeText = (node: any): string => {
+  if (node == null) return '';
+  if (typeof node === 'string' || typeof node === 'number') return String(node);
+  if (Array.isArray(node)) return node.map(getNodeText).join('');
+  if (typeof node === 'object' && node?.props?.children) return getNodeText(node.props.children);
+  return '';
 };
 
 interface PostDetailProps {
@@ -46,28 +63,25 @@ const PostDetail: React.FC<PostDetailProps> = ({ articleId, onBack }) => {
     // 匹配 markdown 标题: ## 标题 或 ### 标题
     const headingRegex = /^(#{2,4})\s+(.+)$/gm;
     let match;
+    const slugCounts: Record<string, number> = {};
     
     while ((match = headingRegex.exec(content)) !== null) {
       const level = match[1].length; // ## = 2, ### = 3, #### = 4
       const text = match[2].trim();
+      
       // 生成唯一ID
-      const id = `heading-${items.length}`;
-      items.push({ id, text, level });
+      let slug = generateSlug(text);
+      if (slugCounts[slug]) {
+        slugCounts[slug]++;
+        slug = `${slug}-${slugCounts[slug]}`;
+      } else {
+        slugCounts[slug] = 1;
+      }
+      
+      items.push({ id: slug, text, level });
     }
     
     return items;
-  };
-
-  // 处理内容，为标题添加ID
-  const processContent = (content: string, tocItems: TocItem[]): string => {
-    if (!content || tocItems.length === 0) return content;
-    
-    let index = 0;
-    return content.replace(/^(#{2,4})\s+(.+)$/gm, (match, hashes, text) => {
-      const id = tocItems[index]?.id || `heading-${index}`;
-      index++;
-      return `<h${hashes.length} id="${id}" class="scroll-mt-20">${text.trim()}</h${hashes.length}>`;
-    });
   };
 
   useEffect(() => {
@@ -308,14 +322,13 @@ const PostDetail: React.FC<PostDetailProps> = ({ articleId, onBack }) => {
           
           <div 
             ref={contentRef}
-            className="prose prose-lg dark:prose-invert max-w-none mb-16 text-gray-800 dark:text-gray-200 leading-relaxed"
-            dangerouslySetInnerHTML={{
-              __html: processContent(
-                article.content || article.contentHtml || '暂无内容。',
-                toc
-              ).replace(/\n/g, '<br/>')
-            }}
-          />
+            className="mb-16 text-gray-800 dark:text-gray-200 leading-relaxed"
+          >
+            <MarkdownRenderer 
+              content={article.content || article.contentHtml || '暂无内容。'} 
+              className="prose-lg"
+            />
+          </div>
         </article>
       </div>
 

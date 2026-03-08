@@ -6,6 +6,7 @@ import { getArticles } from '../src/api/article';
 import { getCategories } from '../src/api/category';
 import { getTags } from '../src/api/tag';
 import { getUserProfile } from '../src/api/user';
+import MarkdownRenderer from '../components/MarkdownRenderer';
 
 const formatDate = (dateStr: string | undefined): string => {
   if (!dateStr) return '未知日期';
@@ -124,9 +125,9 @@ const Home: React.FC<HomeProps> = ({ onPostClick, onCategoryClick, onTagClick })
                   <h3 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white group-hover:text-primary-600 transition-colors">
                     {featuredPost.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-6 line-clamp-2 leading-relaxed">
-                    {featuredPost.summary}
-                  </p>
+                  <div className="text-gray-600 dark:text-gray-400 mb-6 line-clamp-3 leading-relaxed">
+                    <MarkdownRenderer content={featuredPost.summary || '暂无摘要'} className="prose-sm" />
+                  </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4 text-sm text-gray-500">
                       <span className="flex items-center"><Eye size={16} className="mr-1" /> {featuredPost.viewCount || featuredPost.views || 0}</span>
@@ -161,7 +162,9 @@ const Home: React.FC<HomeProps> = ({ onPostClick, onCategoryClick, onTagClick })
                   <div className="p-5">
                     <span className="text-xs font-bold text-primary-500 uppercase">{post.categoryName || post.category?.name || '文章'}</span>
                     <h3 className="text-xl font-bold my-2 group-hover:text-primary-600 transition-colors line-clamp-1">{post.title}</h3>
-                    <p className="text-gray-500 text-sm line-clamp-2 mb-4">{post.summary}</p>
+                    <div className="text-gray-500 text-sm line-clamp-2 mb-4">
+                      <MarkdownRenderer content={post.summary || '暂无摘要'} className="prose-sm" />
+                    </div>
                     <div className="flex items-center justify-between text-xs text-gray-400">
                       <span>{formatDate(post.createTime || post.publishedAt)}</span>
                       <span className="flex items-center"><Eye size={12} className="mr-1" /> {post.viewCount || post.views || 0}</span>

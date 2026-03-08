@@ -1,0 +1,2 @@
+
+02abbcc437aa76f22f336c2fa880765ffeda562e	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/@types%2fprismjs","integrity":null,"time":1772963249735,"size":"262","metadata":{"time":1772963249735,"url":"http://registry.npm.taobao.org/@types%2fprismjs","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sun, 08 Mar 2026 09:47:29 GMT","location":"https://registry.npmmirror.com/@types%2fprismjs"},"options":{"compress":true},"status":301}}

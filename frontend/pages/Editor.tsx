@@ -12,8 +12,7 @@ import { getCategories } from '../src/api/category';
 import { getTags } from '../src/api/tag';
 import { getColumns } from '../src/api/column';
 import { uploadFile } from '../src/api/upload';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import MarkdownRenderer from '../components/MarkdownRenderer';
 
 interface EditorProps {
   initialArticle?: any;
@@ -49,7 +48,12 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
       setTitle(initialArticle.title || '');
       setContent(initialArticle.content || '');
       // 编辑文章时保持原有分类，不强制设置为0
-      setCategory(initialArticle.categoryId ?? null);
+      if (initialArticle.categoryId !== undefined && initialArticle.categoryId !== null) {
+        setCategory(initialArticle.categoryId);
+      } else if (initialArticle.category?.id) {
+        // 兼容 category 对象形式
+        setCategory(initialArticle.category.id);
+      }
       setSelectedTags(initialArticle.tags?.map((t: any) => t.id) || initialArticle.tagIds || []);
       setSelectedColumns(initialArticle.columnIds || initialArticle.columns?.map((c: any) => c.id) || []);
       setCoverImage(initialArticle.coverImage || '');
@@ -91,6 +95,7 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
   // 单独处理新建文章的默认分类选择
   useEffect(() => {
     // 只在新建文章、分类列表已加载、且当前没有分类时，选择第一个分类
+    // 注意：编辑文章时不要覆盖原有分类，即使 categories 加载较晚
     if (!initialArticle && categories.length > 0 && category === null) {
       setCategory(categories[0].id);
     }
@@ -490,11 +495,8 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
               <Eye size={14} /> 预览
             </button>
           </div>
-          <button className="px-6 py-2 border border-gray-200 dark:border-gray-800 rounded-xl font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-            草稿
-          </button>
           <button 
-            onClick={() => onSave({ title, content, category, selectedTags, selectedColumns, coverImage })}
+            onClick={() => onSave({ title, content, category, selectedTags, selectedColumns, coverImage, status: 'published' })}
             className="px-6 py-2 bg-primary-600 text-white rounded-xl font-semibold shadow-lg shadow-primary-500/20 hover:bg-primary-700 transition-all flex items-center"
           >
             <Save size={18} className="mr-2" /> 发布
@@ -571,11 +573,9 @@ const Editor: React.FC<EditorProps> = ({ initialArticle, onSave }) => {
               
               {viewMode !== 'edit' && (
                 <div ref={previewRef} className={`${viewMode === 'split' ? 'w-1/2' : 'w-full'} h-[600px] overflow-auto`}>
-                  <div className="px-6 py-6 min-h-full prose dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-a:text-primary-600 prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-blockquote:border-l-primary-500 prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-gray-800/50 prose-blockquote:py-1 prose-blockquote:rounded-r-lg prose-table:overflow-hidden prose-th:bg-gray-100 dark:prose-th:bg-gray-800">
+                  <div className="px-6 py-6 min-h-full">
                     {content ? (
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {content}
-                      </ReactMarkdown>
+                      <MarkdownRenderer content={content} />
                     ) : (
                       <p className="text-gray-400 italic">预览区域 - 开始输入内容查看效果</p>
                     )}

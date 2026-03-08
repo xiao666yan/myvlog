@@ -379,11 +379,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
                       <td className="px-6 py-4 text-sm text-gray-500">{article.category?.name || '未分类'}</td>
                       <td className="px-6 py-4">
                         <span className={`px-2 py-1 text-xs font-bold rounded-full ${
-                          article.status === 'PUBLISHED' 
+                          article.status === 'PUBLISHED' || article.status === 'published'
                           ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' 
-                          : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+                          : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
                         }`}>
-                          {article.status === 'PUBLISHED' ? '已发布' : '草稿'}
+                          {article.status === 'PUBLISHED' || article.status === 'published' ? '已发布' : '草稿'}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm font-medium">{article.views}</td>
@@ -576,6 +576,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                   {(() => {
+                    // 递归渲染函数，支持无限层级
                     const renderColumnRow = (col: any, level: number = 0): React.ReactNode[] => {
                       const rows: React.ReactNode[] = [];
                       const hasChildren = col.children && col.children.length > 0;
@@ -584,21 +585,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
                         <tr key={col.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                           <td className="px-6 py-4">
                             <div className="flex items-center space-x-3" style={{ paddingLeft: `${level * 24}px` }}>
-                              {hasChildren && (
-                                <span className="text-gray-400 text-xs">└─</span>
+                              {level > 0 && (
+                                <span className="text-gray-300 mr-1">└─</span>
                               )}
                               {col.coverImage ? (
-                                <img src={col.coverImage} alt={col.name} className="w-10 h-10 rounded-full object-cover" />
+                                <img src={col.coverImage} alt={col.name} className="w-10 h-10 rounded-lg object-cover" />
                               ) : (
-                                <div className="w-10 h-10 bg-primary-50 dark:bg-primary-900/20 text-primary-600 rounded-full flex items-center justify-center">
+                                <div className="w-10 h-10 bg-primary-50 dark:bg-primary-900/20 text-primary-600 rounded-lg flex items-center justify-center">
                                   <Library size={20} />
                                 </div>
                               )}
                               <div>
                                 <span className="font-semibold block">{col.name}</span>
-                                {level > 0 && (
-                                  <span className="text-xs text-gray-400">{level}级子专栏</span>
-                                )}
+                                <span className="text-xs text-gray-400">/{col.slug}</span>
                               </div>
                             </div>
                           </td>
@@ -848,9 +847,27 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onEditArticle }) => {
                       onChange={(e) => setFormData({...formData, parentId: e.target.value})}
                     >
                       <option value="">顶级专栏</option>
-                      {columns.filter(c => !editingItem || c.id !== editingItem.id).map(col => (
-                        <option key={col.id} value={col.id}>{col.name}</option>
-                      ))}
+                      {(() => {
+                        const renderOptions = (cols: any[], level = 0): React.ReactNode[] => {
+                          const options: React.ReactNode[] = [];
+                          cols.forEach(col => {
+                            // Prevent selecting itself or its children as parent (circular reference)
+                            if (editingItem && (col.id === editingItem.id)) return;
+                            
+                            options.push(
+                              <option key={col.id} value={col.id}>
+                                {'\u00A0'.repeat(level * 4)}{level > 0 ? '└ ' : ''}{col.name}
+                              </option>
+                            );
+                            
+                            if (col.children && col.children.length > 0) {
+                              options.push(...renderOptions(col.children, level + 1));
+                            }
+                          });
+                          return options;
+                        };
+                        return renderOptions(columns);
+                      })()}
                     </select>
                   </div>
                 </>

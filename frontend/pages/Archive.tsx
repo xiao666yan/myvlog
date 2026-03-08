@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ChevronRight, ChevronDown, BookOpen, FileText, Menu, X, Edit3, Save, Clock, Library, Trash2, Share2, Link2, Check, Twitter } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { getColumns, getColumnTree, getArticlesByColumnId } from '../src/api/column';
 import { getArticleById } from '../src/api/article';
 import { getNotesByArticleId, createNote, deleteNote } from '../src/api/learningNote';
 import { Article, Column, LearningNote } from '../types';
+import MarkdownRenderer from '../components/MarkdownRenderer';
 
 interface ArchiveProps {
   onPostClick?: (id: number) => void;
@@ -192,32 +191,44 @@ const Archive: React.FC<ArchiveProps> = ({ onPostClick }) => {
 
   const toggleExpand = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    // Toggle immediately for instant feedback
     setExpandedCols(prev => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+        // Also fetch articles when expanding for the first time
+        if (!prev.has(id)) {
+          fetchArticlesForColumn(id);
+        }
+      }
       return next;
     });
   };
 
-  const handleColumnClick = (id: string) => {
+  const handleColumnClick = async (id: string) => {
     setSelectedColumnId(id);
+    setSelectedArticle(null); // Clear selected article
+    setViewMode('list'); // Switch to column info view
+    
+    // Auto expand the clicked column immediately for better UX
+    setExpandedCols(prev => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+
+    // Fetch articles for this column to display in sidebar
+    // Don't await, let it load in background for better responsiveness
+    fetchArticlesForColumn(id);
+    
     if (window.innerWidth < 768) setIsSidebarOpenMobile(false);
   };
 
   const handleArticleClick = async (article: Article) => {
-    if (selectedArticle?.id === article.id && viewMode === 'preview') {
-      try {
-        const fullArticle = await getArticleById(article.id);
-        setSelectedArticle(fullArticle);
-        setViewMode('detail');
-      } catch (error) {
-        console.error('Failed to fetch article detail:', error);
-      }
-    } else {
-      setSelectedArticle(article);
-      setViewMode('preview');
-    }
+    // 使用 hash 路由跳转到文章详情页
+    window.location.hash = `post/${article.id}`;
   };
 
   const handleAddNote = async () => {
@@ -247,85 +258,107 @@ const Archive: React.FC<ArchiveProps> = ({ onPostClick }) => {
     return date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
-  const renderColumnNode = (col: Column, level: number = 0): React.ReactNode => {
-    const hasChildren = col.children && col.children.length > 0;
-    const isExpanded = expandedCols.has(col.id.toString());
-    const isArticlesExpanded = expandedArticles.has(col.id.toString());
-    const isSelected = selectedColumnId === col.id.toString();
-    const articles = columnArticles[col.id.toString()] || [];
+  // Helper to find a column by ID recursively
+  const findColumnById = (cols: Column[], id: string): Column | undefined => {
+    for (const col of cols) {
+      if (col.id.toString() === id) return col;
+      if (col.children && col.children.length > 0) {
+        const found = findColumnById(col.children, id);
+        if (found) return found;
+      }
+    }
+    return undefined;
+  };
 
+  const selectedColumn = selectedColumnId ? findColumnById(columns, selectedColumnId) : undefined;
+
+  const renderColumnNode = (col: Column, level: number = 0) => {
+    // Only render articles if this column is expanded
+    const isExpanded = expandedCols.has(col.id.toString());
+    const isSelected = selectedColumnId === col.id.toString();
+    
+    // Get articles for this column (they are fetched when column is clicked)
+    const articlesForThisColumn = columnArticles[col.id.toString()] || [];
+    
+    // Check if column has children or articles (now articles are also children in the view)
+    const hasChildren = (col.children && col.children.length > 0) || articlesForThisColumn.length > 0;
+    
     return (
       <li key={col.id} className="select-none">
-        <div
-          className={`flex items-center py-2 px-3 rounded-lg transition-colors cursor-pointer ${
-            isSelected
-              ? 'bg-primary-600 text-white'
-              : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
+        <div 
+          className={`group flex items-center justify-between py-2 px-3 rounded-lg transition-all cursor-pointer ${
+            isSelected 
+            ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20' 
+            : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
           }`}
-          onClick={() => handleColumnClick(col.id.toString())}
+          onClick={(e) => {
+            // If clicking the expand icon area (if it has children), toggle expand
+            // Otherwise select the column
+            if (hasChildren && (e.target as HTMLElement).closest('.expand-btn')) {
+              return;
+            }
+            handleColumnClick(col.id.toString());
+          }}
+          style={{ paddingLeft: `${level * 12 + 12}px` }}
         >
-          {hasChildren ? (
-            <button
-              onClick={(e) => toggleExpand(col.id.toString(), e)}
-              className={`p-1 mr-1 rounded hover:bg-black/10 ${isSelected ? 'text-white' : 'text-gray-500'}`}
-            >
-              {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-            </button>
-          ) : (
-            <span className="w-6" />
-          )}
-          <BookOpen size={16} className={`mr-2 ${isSelected ? 'text-primary-200' : 'text-primary-600'}`} />
-          <span
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleArticleExpand(col.id.toString(), e);
-            }}
-            className="flex-1 truncate text-sm font-medium cursor-pointer"
-          >
-            {col.name}
-          </span>
+          <div className="flex items-center min-w-0 flex-1">
+            {hasChildren ? (
+              <button 
+                className={`expand-btn p-0.5 mr-1.5 rounded hover:bg-black/10 dark:hover:bg-white/10 transition-colors ${
+                  isSelected ? 'text-white/80 hover:text-white' : 'text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300'
+                }`}
+                onClick={(e) => toggleExpand(col.id.toString(), e)}
+              >
+                {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+              </button>
+            ) : (
+              <span className="w-5 mr-1.5" /> 
+            )}
+            
+            <div className={`mr-2 ${isSelected ? 'text-white' : 'text-primary-500'}`}>
+              {level === 0 ? <Library size={16} /> : <BookOpen size={16} />}
+            </div>
+            
+            <span className="truncate text-sm font-medium">{col.name}</span>
+          </div>
+          
           {col.articleCount !== undefined && col.articleCount > 0 && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleArticleExpand(col.id.toString(), e);
-              }}
-              className={`p-1 rounded-lg transition-colors ${
-                isSelected
-                  ? 'bg-primary-700 hover:bg-primary-800 text-white'
-                  : 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30'
-              }`}
-              title={`${col.articleCount} 篇文章`}
-            >
-              <FileText size={14} />
-            </button>
+            <span className={`ml-2 p-1 rounded-lg transition-colors ${
+              isSelected 
+              ? 'bg-white/20 text-white' 
+              : 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30'
+            }`} title={`${col.articleCount} 篇文章`}>
+              <FileText size={12} />
+            </span>
           )}
         </div>
-        {isArticlesExpanded && articles.length > 0 && (
-          <div className="mt-1 ml-4 space-y-1">
-            {articles.map(article => (
-              <div
-                key={article.id}
-                onClick={() => {
-                  setSelectedArticle(article);
-                  setViewMode('preview');
-                  setSelectedColumnId(col.id.toString());
-                }}
-                className={`flex items-center py-1.5 px-3 rounded cursor-pointer text-sm transition-colors ${
-                  selectedArticle?.id === article.id
-                    ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300'
-                    : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'
-                }`}
-              >
-                <FileText size={14} className="mr-2 flex-shrink-0" />
-                <span className="truncate">{article.title}</span>
-              </div>
+
+        {/* Render children columns recursively */}
+        {isExpanded && (
+          <ul className="mt-1 space-y-1">
+            {/* Render Sub-columns */}
+            {col.children && col.children.length > 0 && col.children.map(child => renderColumnNode(child, level + 1))}
+            
+            {/* Render Articles as sub-items */}
+            {articlesForThisColumn.length > 0 && articlesForThisColumn.map(article => (
+              <li key={`art-${article.id}`} className="select-none">
+                 <div
+                   className={`flex items-center py-2 px-3 rounded-lg transition-colors cursor-pointer ${
+                     selectedArticle?.id === article.id
+                       ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 border-l-2 border-primary-500'
+                       : 'hover:bg-gray-50 dark:hover:bg-gray-800/50 text-gray-600 dark:text-gray-400'
+                   }`}
+                   style={{ paddingLeft: `${(level + 1) * 12 + 20}px` }}
+                   onClick={(e) => {
+                     e.stopPropagation();
+                     handleArticleClick(article);
+                   }}
+                 >
+                   <FileText size={14} className="mr-2 flex-shrink-0 opacity-70" />
+                   <span className="truncate text-sm">{article.title}</span>
+                 </div>
+              </li>
             ))}
-          </div>
-        )}
-        {hasChildren && isExpanded && (
-          <ul className={`pl-4 space-y-1 mt-1 border-l border-gray-200 dark:border-gray-700 ml-4`}>
-            {col.children!.map(child => renderColumnNode(child, level + 1))}
           </ul>
         )}
       </li>
@@ -408,62 +441,141 @@ const Archive: React.FC<ArchiveProps> = ({ onPostClick }) => {
 
               {viewMode === 'list' && (
                 <div className="max-w-5xl mx-auto">
-                  <div className="space-y-4">
-                    {articles.length > 0 ? articles.map(article => (
-                      <div
-                        key={article.id}
-                        onClick={() => handleArticleClick(article)}
-                        className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group overflow-hidden"
-                      >
-                        {/* Cover Image */}
-                        <div className="h-40 overflow-hidden bg-gray-100 dark:bg-gray-700">
-                          <img
-                            src={article.coverImage || `https://picsum.photos/seed/article${article.id}/400/200`}
-                            alt={article.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = `https://picsum.photos/seed/article${article.id}/400/200`;
-                            }}
+                  {/* Column Information View */}
+                  <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 md:p-12 shadow-sm border border-gray-100 dark:border-gray-700">
+                    <div className="flex flex-col md:flex-row gap-8 items-start">
+                      {/* Cover Image */}
+                      {selectedColumn?.coverImage ? (
+                        <div className="w-full md:w-1/3 rounded-2xl overflow-hidden shadow-md">
+                          <img 
+                            src={selectedColumn.coverImage} 
+                            alt={selectedColumn.name}
+                            className="w-full h-auto object-cover aspect-[4/3]"
                           />
                         </div>
-                        <div className="p-6">
-                          <div className="flex flex-col gap-3">
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2">
-                              {article.title}
-                            </h3>
-                            <p className="text-gray-600 dark:text-gray-400 line-clamp-2 text-sm">
-                              {article.summary || '暂无摘要'}
-                            </p>
-                            <div className="flex items-center justify-between mt-2">
-                              <div className="flex items-center gap-2">
-                                {article.columns && article.columns.length > 0 && (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 text-xs font-medium rounded-full">
-                                    <BookOpen size={10} />
-                                    {article.columns[0].name}
-                                  </span>
-                                )}
-                                <span className="text-xs text-gray-400 dark:text-gray-500 flex items-center">
-                                  <Clock size={12} className="mr-1" />
-                                  {formatDate(article.publishedAt || article.createdAt)}
-                                </span>
+                      ) : (
+                        <div className="w-full md:w-1/3 aspect-[4/3] bg-primary-50 dark:bg-primary-900/20 rounded-2xl flex items-center justify-center">
+                          <Library size={64} className="text-primary-300 dark:text-primary-700" />
+                        </div>
+                      )}
+                      
+                      <div className="flex-1 space-y-6">
+                        <div className="flex items-center gap-3">
+                          <span className="px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-sm font-bold rounded-full uppercase tracking-wider">
+                            专栏
+                          </span>
+                          <span className="text-sm text-gray-500 dark:text-gray-400">
+                            {selectedColumn?.slug || ''}
+                          </span>
+                        </div>
+                        
+                        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white leading-tight">
+                          {selectedColumn?.name}
+                        </h1>
+                        
+                        <div className="prose prose-lg dark:prose-invert text-gray-600 dark:text-gray-300">
+                          {selectedColumn?.description || '暂无描述'}
+                        </div>
+                        
+                        <div className="flex items-center gap-6 pt-6 border-t border-gray-100 dark:border-gray-700">
+                          <div className="flex flex-col">
+                            <span className="text-3xl font-bold text-gray-900 dark:text-white">
+                              {articles.length}
+                            </span>
+                            <span className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium">文章</span>
+                          </div>
+                          <div className="w-px h-10 bg-gray-200 dark:bg-gray-700"></div>
+                           <div className="flex flex-col">
+                              <span className="text-3xl font-bold text-gray-900 dark:text-white">
+                                {(() => {
+                                  const countSubColumns = (c: Column): number => {
+                                    let count = 0;
+                                    if (c.children && c.children.length > 0) {
+                                      count += c.children.length;
+                                      c.children.forEach(child => {
+                                        count += countSubColumns(child);
+                                      });
+                                    }
+                                    return count;
+                                  };
+                                  return selectedColumn ? countSubColumns(selectedColumn) : 0;
+                                })()}
+                              </span>
+                              <span className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium">子专栏</span>
+                           </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Sub Columns Grid */}
+                    {(() => {
+                      if (!selectedColumn || !selectedColumn.children || selectedColumn.children.length === 0) return null;
+                      
+                      return (
+                        <div className="mt-12">
+                          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+                            <Library size={20} className="text-primary-600" />
+                            子专栏
+                          </h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {selectedColumn.children.map(subCol => (
+                              <div 
+                                key={subCol.id}
+                                className="flex flex-col h-full bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 hover:shadow-md transition-all group overflow-hidden"
+                              >
+                                {/* Parent Column (Level 2) */}
+                                <div 
+                                  className="p-6 cursor-pointer flex-1"
+                                  onClick={() => handleColumnClick(subCol.id.toString())}
+                                >
+                                  <div className="flex items-center gap-3 mb-3">
+                                    <div className="p-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm group-hover:bg-primary-50 dark:group-hover:bg-primary-900/20 transition-colors">
+                                      <BookOpen size={20} className="text-gray-500 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400" />
+                                    </div>
+                                    <h4 className="font-bold text-lg text-gray-900 dark:text-white group-hover:text-primary-600 transition-colors">
+                                      {subCol.name}
+                                    </h4>
+                                  </div>
+                                  <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-3 h-10">
+                                    {subCol.description || '暂无描述'}
+                                  </p>
+                                  <div className="flex items-center justify-between text-xs text-gray-400 border-b border-gray-100 dark:border-gray-700 pb-3 mb-3">
+                                    <span>{subCol.articleCount || 0} 篇文章</span>
+                                    <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                                  </div>
+                                  
+                                  {/* Grandchildren Columns (Level 3) */}
+                                  {subCol.children && subCol.children.length > 0 && (
+                                    <div className="space-y-2 mt-2">
+                                      {subCol.children.map(grandChild => (
+                                        <div 
+                                          key={grandChild.id}
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleColumnClick(grandChild.id.toString());
+                                          }}
+                                          className="flex items-center justify-between p-2 rounded-lg hover:bg-white dark:hover:bg-gray-800 transition-colors cursor-pointer group/grand"
+                                        >
+                                          <div className="flex items-center gap-2 min-w-0">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600 group-hover/grand:bg-primary-500"></div>
+                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate group-hover/grand:text-primary-600 dark:group-hover/grand:text-primary-400">
+                                              {grandChild.name}
+                                            </span>
+                                          </div>
+                                          <span className="text-xs text-gray-400 bg-white dark:bg-gray-800 px-1.5 py-0.5 rounded border border-gray-100 dark:border-gray-700">
+                                            {grandChild.articleCount || 0}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
                               </div>
-                              <div className="flex items-center text-sm font-semibold text-primary-600 dark:text-primary-400 group-hover:translate-x-1 transition-transform">
-                                阅读
-                                <ChevronRight size={16} className="ml-1" />
-                              </div>
-                            </div>
+                            ))}
                           </div>
                         </div>
-                      </div>
-                    )) : (
-                      <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
-                        <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                          <FileText size={40} className="text-gray-400" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">该专栏暂无文章</h3>
-                        <p className="text-gray-500 dark:text-gray-400">去创作你的第一篇文章吧！</p>
-                      </div>
-                    )}
+                      );
+                    })()}
                   </div>
                 </div>
               )}
@@ -544,9 +656,9 @@ const Archive: React.FC<ArchiveProps> = ({ onPostClick }) => {
                             <div className="pb-8">
                               {viewMode === 'preview' ? (
                                 <div className="space-y-8">
-                                  <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-                                    {selectedArticle.summary || '暂无摘要'}
-                                  </p>
+                                  <div className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                    <MarkdownRenderer content={selectedArticle.summary || '暂无摘要'} className="prose-lg" />
+                                  </div>
                                   
                                   <div className="flex items-center justify-between pt-8 border-t border-gray-100 dark:border-gray-700">
                                     <span className="text-gray-400 dark:text-gray-500 text-sm">
@@ -562,10 +674,8 @@ const Archive: React.FC<ArchiveProps> = ({ onPostClick }) => {
                                   </div>
                                 </div>
                               ) : (
-                                <div className="prose prose-lg prose-blue dark:prose-invert max-w-none">
-                                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                    {selectedArticle.content || '加载中...'}
-                                  </ReactMarkdown>
+                                <div className="max-w-none">
+                                  <MarkdownRenderer content={selectedArticle.content || '加载中...'} className="prose-lg" />
                                 </div>
                               )}
                             </div>

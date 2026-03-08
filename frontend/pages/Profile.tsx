@@ -230,7 +230,7 @@ const Profile: React.FC<ProfileProps> = ({ onUpdate, onEditArticle }) => {
                       article.status === 'draft' ? 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400' :
                       'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
                     }`}>
-                      {article.status === 'published' ? '已发布' : article.status === 'draft' ? '草稿' : article.status}
+                      {article.status === 'published' ? '已发布' : article.status === 'draft' ? '草稿' : '审核中'}
                     </span>
                   </div>
                   <div className="flex items-center gap-4 text-xs text-gray-500">

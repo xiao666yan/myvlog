@@ -1,0 +1,2 @@
+
+53e8d75631e93d9c736790d5e01bdd3f16765a8c	{"key":"make-fetch-happen:request-cache:http://registry.npm.taobao.org/react-syntax-highlighter","integrity":null,"time":1772963248426,"size":"262","metadata":{"time":1772963248426,"url":"http://registry.npm.taobao.org/react-syntax-highlighter","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sun, 08 Mar 2026 09:47:28 GMT","location":"https://registry.npmmirror.com/react-syntax-highlighter"},"options":{"compress":true},"status":301}}

@@ -55,3 +55,19 @@
 .dark .scrollbar-thin {
   scrollbar-color: #374151 transparent;
 }
+
+/* Markdown Table Centering */
+.prose table {
+  text-align: center;
+}
+
+.prose thead th,
+.prose tbody td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Ensure left alignment for code blocks to maintain readability */
+.prose pre {
+  text-align: left;
+}
